@@ -111,8 +111,8 @@ class ContactInfoSpider(CrawlSpider):
 
         if emails:
             yield ContactInfoItem(
-                domain=self.allowed_domains[0],
                 url=response.url,
+                domain=self.allowed_domains[0],
                 depth=current_page_depth,
                 emails=emails
             )

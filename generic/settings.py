@@ -7,6 +7,7 @@ LOG_LEVEL = 'DEBUG'
 
 # pipelines
 ITEM_PIPELINES = {
+    'generic.pipelines.FileWriterPipeline': 900
 }
 
 # middlewares
