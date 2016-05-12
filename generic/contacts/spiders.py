@@ -22,7 +22,7 @@ class ContactInfoSpider(CrawlSpider):
     UTF8_HTML_PARSER = lxml.etree.HTMLParser(encoding='utf-8')
 
     # overrides
-    name = 'contact_info'
+    name = 'contacts'
     rules = (
         Rule(LinkExtractor(), callback='parse_item', follow=True),
         Rule(SgmlLinkExtractor(), callback='parse_item', follow=True)
