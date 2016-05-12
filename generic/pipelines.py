@@ -12,8 +12,7 @@ class FileWriterPipeline(object):
         self.file = open('output.txt', 'w')
 
     def process_item(self, item, spider):
-        LOG.debug('herererere')
-        self.file.write(','.join(item['emails']) + os.linesep)
+        self.file.write(item['email'] + os.linesep)
 
     def close_spider(self, spider):
         if self.file:

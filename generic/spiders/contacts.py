@@ -109,10 +109,5 @@ class ContactInfoSpider(CrawlSpider):
         emails = re.findall(Regex.PT_EMAIL, content)
         # TODO: add patterns for phone & fax and try to match them too
 
-        if emails:
-            yield ContactInfoItem(
-                url=response.url,
-                domain=self.allowed_domains[0],
-                depth=current_page_depth,
-                emails=emails
-            )
+        for email in emails:
+            yield ContactInfoItem(email=email)
