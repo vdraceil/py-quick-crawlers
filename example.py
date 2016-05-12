@@ -16,7 +16,10 @@ website_list = [
     ('http://www.uniquemetalworks.net', 2),
 ]
 
+# define output file
+out_file = './output0.txt'
+
 # invoke the Crawl API
 # it will block till it completes
-controller.contact_info_crawl(website_list)
+controller.contact_info_crawl(website_list, out_file)
 print "CRAWL COMPLETE!!"

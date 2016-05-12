@@ -35,9 +35,10 @@ class ContactInfoSpider(CrawlSpider):
             self.allowed_domains = [ kwargs.get('domain', None) or args[0] ]
             self.start_urls = [ kwargs.get('start_url', None) or args[1] ]
             self.max_depth = kwargs.get('max_depth', None) or args[2]
+            self.out_file = kwargs.get('out_file', None) or args[3]
         except (KeyError, IndexError):
-            raise CloseSpider(reason='Expecting 3 mandatory params - ' \
-                '<domain>, <start_url>, <max_depth>')
+            raise CloseSpider(reason='Expecting 4 mandatory params - ' \
+                '<domain>, <start_url>, <max_depth>, <out_file>')
 
         LOG.info('START URL: %s ; ALLOWED DOMAIN: %s' \
             %(self.start_urls[0], self.allowed_domains[0]))

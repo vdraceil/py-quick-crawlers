@@ -10,13 +10,14 @@ from scrapy.utils.project import get_project_settings
 
 from constants import Regex
 from utils.general import URLUtils
-from generic.contacts.spiders import ContactInfoSpider
 
 
 LOG = logging.getLogger(__name__)
 
 class SpiderController(object):
-    def contact_info_crawl(self, website_list):
+    def contact_info_crawl(self, website_list, out_file):
+        from generic.contacts.spiders import ContactInfoSpider
+
         # set env variable so that scrapy knows what custom settings to load
         os.environ['SCRAPY_SETTINGS_MODULE'] = 'generic.contacts.settings'
 
@@ -36,7 +37,7 @@ class SpiderController(object):
                 reactor.run()
 
         def run_spider(domain, start_url, max_depth):
-            spider = ContactInfoSpider(domain, start_url, max_depth)
+            spider = ContactInfoSpider(domain, start_url, max_depth, out_file)
             crawler = ScrapyCrawler(spider)
             crawler.start()
             crawler.join()

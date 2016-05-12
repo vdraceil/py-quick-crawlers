@@ -19,13 +19,15 @@ class DuplicatesFilterPipeline(object):
 
 class FileWriterPipeline(object):
     def __init__(self):
-        LOG.debug('Write to file initiated')
-        self.file = open('output.txt', 'w')
+        self.file = None
 
     def process_item(self, item, spider):
+        if not self.file:
+            LOG.debug('Write to file initiated')
+            self.file = open(spider.out_file, 'a')
         self.file.write(item['email'] + os.linesep)
 
     def close_spider(self, spider):
         if self.file:
-            LOG.debug('Write to file complete')
+            LOG.debug('Write to file complete: %s' %spider.out_file)
             self.file.close()
