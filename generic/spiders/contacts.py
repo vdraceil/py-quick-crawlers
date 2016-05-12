@@ -1,3 +1,4 @@
+import re
 import logging
 import lxml.etree
 import xml.sax.saxutils as SAXUtils
@@ -104,15 +105,14 @@ class ContactInfoSpider(CrawlSpider):
         # unescape HTML entities
         content = SAXUtils.unescape(content)
 
-        # TODO: try to match up for the contacts info
-        phone = '1234567890'
-        email = 'test@test.com'
+        # try to match up for the contacts info
+        emails = re.findall(Regex.PT_EMAIL, content)
+        # TODO: add patterns for phone & fax and try to match them too
 
-        # save the contents of the web page
-        yield ContactInfoItem(
-            domain=self.allowed_domains[0],
-            url=response.url,
-            depth=current_page_depth,
-            phone=phone,
-            email=email
-        )
+        if emails:
+            yield ContactInfoItem(
+                domain=self.allowed_domains[0],
+                url=response.url,
+                depth=current_page_depth,
+                emails=emails
+            )

@@ -13,8 +13,7 @@ controller = SpiderController()
 # define a scraping job (website_list)
 website_list = [
     # (<site>, <max_depth>)
-    ('http://www.google.com', 2),
-    ('http://mnmlist.com/', 2),
+    ('http://www.uniquemetalworks.net', 2),
 ]
 
 # invoke the Crawl API

@@ -17,4 +17,5 @@ class Regex(object):
     PT_PUNCTUATIONS = re.compile('[%s0-9]' % re.escape(string.punctuation))
     PT_NON_ENG_CHARS = re.compile(r'[^A-Za-z\s]+')
     PT_NON_PRINTABLE_CHARS = re.compile('[\x00-\x01](?![\x00-\x0f])')
-    PT_POSTGRES_REGEX_SELECTIVE_ESCAPE = re.compile('([\.\^\$\-\(\)\[\]\{\{])')
+
+    PT_EMAIL = re.compile(r'[a-zA-Z0-9_\.+\-]+@[a-zA-Z0-9\-]+\.[a-zA-Z0-9\-\.]+')
