@@ -11,7 +11,7 @@ from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
 from scrapy.http.response.html import HtmlResponse
 
 from constants import Regex
-from generic.items import ContactInfoItem
+from generic.contacts.items import ContactInfoItem
 
 
 LOG = logging.getLogger(__name__)

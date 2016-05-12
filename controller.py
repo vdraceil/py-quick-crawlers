@@ -10,19 +10,16 @@ from scrapy.utils.project import get_project_settings
 
 from constants import Regex
 from utils.general import URLUtils
-from generic.spiders.contacts import ContactInfoSpider
+from generic.contacts.spiders import ContactInfoSpider
 
 
 LOG = logging.getLogger(__name__)
 
 class SpiderController(object):
-    # set env variable so that scrapy knows what custom settings to load
-    os.environ['SCRAPY_SETTINGS_MODULE'] = 'generic.settings'
-
-    def __init__(self):
-        pass
-
     def contact_info_crawl(self, website_list):
+        # set env variable so that scrapy knows what custom settings to load
+        os.environ['SCRAPY_SETTINGS_MODULE'] = 'generic.contacts.settings'
+
         class ScrapyCrawler(Process):
             def __init__(self, spider):
                 super(ScrapyCrawler, self).__init__()
