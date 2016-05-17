@@ -11,7 +11,7 @@ from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
 from scrapy.http.response.html import HtmlResponse
 
 from constants import Regex
-from generic.contacts.items import ContactInfoItem
+from generic.contacts.items import FlexibleItem
 
 
 LOG = logging.getLogger(__name__)
@@ -110,5 +110,7 @@ class ContactInfoSpider(CrawlSpider):
         emails = re.findall(Regex.PT_EMAIL, content)
         # TODO: add patterns for phone & fax and try to match them too
 
+        item = FlexibleItem()
         for email in emails:
-            yield ContactInfoItem(email=email)
+            item['email'] = email
+            yield item
