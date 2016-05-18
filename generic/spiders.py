@@ -36,7 +36,7 @@ class BaseSpider(CrawlSpider):
         # inheriting children must implement this method
         pass
 
-    def get_content(self, response):
+    def get_text_content(self, response):
         # adjust depth for this project which starts at 1
         current_page_depth = response.meta.get('depth', 0) + 1
 

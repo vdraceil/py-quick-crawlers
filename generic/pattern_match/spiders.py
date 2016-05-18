@@ -1,7 +1,6 @@
 import re
 import logging
 
-from constants import Regex
 from generic.spiders import BaseSpider
 from generic.items import FlexibleItem
 
@@ -29,7 +28,7 @@ class PatternMatchSpider(BaseSpider):
             %(self.start_urls[0], self.allowed_domains[0]))
 
     def parse_item(self, response):
-        content = self.get_content(response)
+        content = self.get_text_content(response)
 
         # try to match up for the given pattern_dict
         hasMatch = False
