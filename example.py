@@ -1,5 +1,6 @@
 import logging
 
+from constants import Regex
 from controller import SpiderController
 
 
@@ -16,10 +17,15 @@ website_list = [
     ('http://www.uniquemetalworks.net', 2),
 ]
 
+# define patterns
+pattern_dict = {
+    'email': Regex.PT_EMAIL
+}
+
 # define output file
 out_file = './output0.txt'
 
 # invoke the Crawl API
 # it will block till it completes
-controller.contact_info_crawl(website_list, out_file)
+controller.contact_info_crawl(website_list, pattern_dict, out_file)
 print "CRAWL COMPLETE!!"

@@ -1,3 +1,4 @@
+import re
 import os
 import logging
 
@@ -15,7 +16,7 @@ from utils.general import URLUtils
 LOG = logging.getLogger(__name__)
 
 class SpiderController(object):
-    def contact_info_crawl(self, website_list, out_file):
+    def contact_info_crawl(self, website_list, pattern_dict, out_file):
         from generic.contacts.spiders import ContactInfoSpider
 
         # set env variable so that scrapy knows what custom settings to load
@@ -37,7 +38,8 @@ class SpiderController(object):
                 reactor.run()
 
         def run_spider(domain, start_url, max_depth):
-            spider = ContactInfoSpider(domain, start_url, max_depth, out_file)
+            spider = ContactInfoSpider(domain, start_url,
+                                       max_depth, pattern_dict, out_file)
             crawler = ScrapyCrawler(spider)
             crawler.start()
             crawler.join()
@@ -47,11 +49,14 @@ class SpiderController(object):
 
             # overall parameter check - basic
             if not isinstance(website_list, list):
-                raise InvalidArgumentError('Args "website_list"' \
+                raise InvalidArgumentError('Arg "website_list"' \
                                         ' should be a list of tuples')
             if len(website_list) == 0:
-                raise InvalidArgumentError('Args "website_list"' \
+                raise InvalidArgumentError('Arg "website_list"' \
                                         ' should have at least one element')
+            if not isinstance(pattern_dict, dict):
+                raise InvalidArgumentError('Arg "pattern_dict"' \
+                                           ' should be a dict')
 
             for item in website_list:
                 # base type check
@@ -65,6 +70,7 @@ class SpiderController(object):
                 type_check = isinstance(url, basestring) and isinstance(depth, int)
                 if not type_check:
                     raise InvalidArgumentError('Args type check failed. ' \
+                        'For "website_list" ' \
                         'Expected - str,int. Given - "%s"'
                         %(','.join((str(type(x) for x in item)))))
 
@@ -76,6 +82,15 @@ class SpiderController(object):
                 if depth <= 0:
                     raise InvalidArgumentError('Depth parameter should ' \
                                             'be strictly greater than 0')
+
+            for key,value in pattern_dict.iteritems():
+                type_check = isinstance(key, basestring) and \
+                    isinstance(value, re._pattern_type)
+                if not type_check:
+                    raise InvalidArgumentError('Args type check failed. ' \
+                        'For "pattern_dict" ' \
+                        'Expected - str, regex. Given - "%s"'
+                        %(str(type(key)) + ',' + str(type(value))))
 
         LOG.debug('crawl API Start - Params - website_list=%s' %(website_list))
         validate_args()
