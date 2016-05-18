@@ -1,4 +1,5 @@
 import os
+import json
 import logging
 
 from scrapy.exceptions import DropItem
@@ -8,16 +9,17 @@ LOG = logging.getLogger(__name__)
 
 class DuplicatesFilterPipeline(object):
     def __init__(self):
-        self.emails = set()
+        self.visited = set()
 
     def process_item(self, item, spider):
-        if item['email'] in self.emails:
+        value = json.dumps(dict(item))
+        if value in self.visited:
             raise DropItem('Duplicate Item Found: %s' %item)
-        self.emails.add(item['email'])
+        self.visited.add(value)
         return item
 
 
-class FileWriterPipeline(object):
+class JSONWriterPipeline(object):
     def __init__(self):
         self.file = None
 
@@ -25,7 +27,8 @@ class FileWriterPipeline(object):
         if not self.file:
             LOG.debug('Write to file initiated')
             self.file = open(spider.out_file, 'a')
-        self.file.write(item['email'] + os.linesep)
+        self.file.write(json.dumps(dict(item)) + os.linesep)
+        return item
 
     def close_spider(self, spider):
         if self.file:

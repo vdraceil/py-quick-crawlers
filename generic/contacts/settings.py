@@ -8,7 +8,7 @@ LOG_LEVEL = 'DEBUG'
 # pipelines
 ITEM_PIPELINES = {
     'generic.contacts.pipelines.DuplicatesFilterPipeline': 100,
-    'generic.contacts.pipelines.FileWriterPipeline': 900
+    'generic.contacts.pipelines.JSONWriterPipeline': 900
 }
 
 # middlewares
