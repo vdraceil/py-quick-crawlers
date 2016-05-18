@@ -27,5 +27,5 @@ out_file = './output0.txt'
 
 # invoke the Crawl API
 # it will block till it completes
-controller.contact_info_crawl(website_list, pattern_dict, out_file)
+controller.pattern_match_crawl(website_list, pattern_dict, out_file)
 print "CRAWL COMPLETE!!"

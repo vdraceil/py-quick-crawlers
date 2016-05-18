@@ -16,11 +16,11 @@ from utils.general import URLUtils
 LOG = logging.getLogger(__name__)
 
 class SpiderController(object):
-    def contact_info_crawl(self, website_list, pattern_dict, out_file):
-        from generic.contacts.spiders import ContactInfoSpider
+    def pattern_match_crawl(self, website_list, pattern_dict, out_file):
+        from generic.pattern_match.spiders import PatternMatchSpider
 
         # set env variable so that scrapy knows what custom settings to load
-        os.environ['SCRAPY_SETTINGS_MODULE'] = 'generic.contacts.settings'
+        os.environ['SCRAPY_SETTINGS_MODULE'] = 'generic.pattern_match.settings'
 
         class ScrapyCrawler(Process):
             def __init__(self, spider):
@@ -38,7 +38,7 @@ class SpiderController(object):
                 reactor.run()
 
         def run_spider(domain, start_url, max_depth):
-            spider = ContactInfoSpider(domain, start_url,
+            spider = PatternMatchSpider(domain, start_url,
                                        max_depth, pattern_dict, out_file)
             crawler = ScrapyCrawler(spider)
             crawler.start()

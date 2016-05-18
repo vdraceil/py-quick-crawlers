@@ -11,25 +11,25 @@ from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
 from scrapy.http.response.html import HtmlResponse
 
 from constants import Regex
-from generic.contacts.items import FlexibleItem
+from generic.pattern_match.items import FlexibleItem
 
 
 LOG = logging.getLogger(__name__)
 
-class ContactInfoSpider(CrawlSpider):
+class PatternMatchSpider(CrawlSpider):
     # constants
     UNWANTED_HTML_ELEMENTS = ['script', 'noscript', 'style', 'link', 'head']
     UTF8_HTML_PARSER = lxml.etree.HTMLParser(encoding='utf-8')
 
     # overrides
-    name = 'contacts'
+    name = 'pattern_match'
     rules = (
         Rule(LinkExtractor(), callback='parse_item', follow=True),
         Rule(SgmlLinkExtractor(), callback='parse_item', follow=True)
     )
 
     def __init__(self, *args, **kwargs):
-        super(ContactInfoSpider, self).__init__()
+        super(PatternMatchSpider, self).__init__()
 
         try:
             self.allowed_domains = [ kwargs.get('domain', None) or args[0] ]
@@ -77,9 +77,9 @@ class ContactInfoSpider(CrawlSpider):
         # make a tree from the page's html content and strip irrelevant tags
         try:
             root = lxml.etree.fromstring(content,
-                                         parser=ContactInfoSpider.UTF8_HTML_PARSER)
+                parser=PatternMatchSpider.UTF8_HTML_PARSER)
             lxml.etree.strip_elements(root, lxml.etree.Comment,
-                                    *ContactInfoSpider.UNWANTED_HTML_ELEMENTS)
+                *PatternMatchSpider.UNWANTED_HTML_ELEMENTS)
         except lxml.etree.XMLSyntaxError:
             return
 

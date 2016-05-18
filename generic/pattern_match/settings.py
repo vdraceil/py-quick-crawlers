@@ -1,24 +1,24 @@
 # scrapy - code related settings
-BOT_NAME = 'contacts'
-SPIDER_MODULES = ['generic.contacts']
-NEWSPIDER_MODULE = 'generic.contacts'
+BOT_NAME = 'pattern_match'
+SPIDER_MODULES = ['generic.pattern_match']
+NEWSPIDER_MODULE = 'generic.pattern_match'
 LOG_ENABLED = True
 LOG_LEVEL = 'DEBUG'
 
 # pipelines
 ITEM_PIPELINES = {
-    'generic.contacts.pipelines.DuplicatesFilterPipeline': 100,
-    'generic.contacts.pipelines.JSONWriterPipeline': 900
+    'generic.pattern_match.pipelines.DuplicatesFilterPipeline': 100,
+    'generic.pattern_match.pipelines.JSONWriterPipeline': 900
 }
 
 # middlewares
 SPIDER_MIDDLEWARES = {
-    'generic.contacts.middlewares.DomainDepthMiddleware': 100,
+    'generic.pattern_match.middlewares.DomainDepthMiddleware': 100,
     'scrapy.contrib.spidermiddleware.depth.DepthMiddleware': None
 }
 
 DOWNLOADER_MIDDLEWARES = {
-    'generic.contacts.middlewares.CustomDownloaderMiddleware': 650,
+    'generic.pattern_match.middlewares.CustomDownloaderMiddleware': 650,
     'scrapy.contrib.downloadermiddleware.downloadtimeout.DownloadTimeoutMiddleware': 350
 }
 
