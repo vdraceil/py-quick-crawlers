@@ -11,7 +11,7 @@ from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
 from scrapy.http.response.html import HtmlResponse
 
 from constants import Regex
-from generic.pattern_match.items import FlexibleItem
+from generic.items import FlexibleItem
 
 
 LOG = logging.getLogger(__name__)

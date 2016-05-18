@@ -7,18 +7,18 @@ LOG_LEVEL = 'DEBUG'
 
 # pipelines
 ITEM_PIPELINES = {
-    'generic.pattern_match.pipelines.DuplicatesFilterPipeline': 100,
-    'generic.pattern_match.pipelines.JSONWriterPipeline': 900
+    'generic.pipelines.DuplicatesFilterPipeline': 100,
+    'generic.pipelines.JSONWriterPipeline': 900
 }
 
 # middlewares
 SPIDER_MIDDLEWARES = {
-    'generic.pattern_match.middlewares.DomainDepthMiddleware': 100,
+    'generic.middlewares.DomainDepthMiddleware': 100,
     'scrapy.contrib.spidermiddleware.depth.DepthMiddleware': None
 }
 
 DOWNLOADER_MIDDLEWARES = {
-    'generic.pattern_match.middlewares.CustomDownloaderMiddleware': 650,
+    'generic.middlewares.CustomDownloaderMiddleware': 650,
     'scrapy.contrib.downloadermiddleware.downloadtimeout.DownloadTimeoutMiddleware': 350
 }
 
