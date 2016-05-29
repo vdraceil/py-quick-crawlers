@@ -1,4 +1,6 @@
 import re
+import os
+import errno
 
 from constants import Regex
 
@@ -42,6 +44,18 @@ class URLUtils(object):
             params = re.sub('\d', '', uri[index+1:])
             uri = '%s?%s' %(url, params)
         return uri
+
+
+class ShellUtils(object):
+    @staticmethod
+    def mkdirp(path):
+        try:
+            os.makedirs(path)
+        except OSError as ex:  # Python >2.5
+            if ex.errno == errno.EEXIST and os.path.isdir(path):
+                pass
+            else:
+                raise
 
 
 class InvalidArgumentError(Exception): pass
