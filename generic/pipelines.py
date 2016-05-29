@@ -2,7 +2,10 @@ import os
 import json
 import logging
 
+from urlparse import urlparse
 from scrapy.exceptions import DropItem
+
+from utils.general import ShellUtils
 
 
 LOG = logging.getLogger(__name__)
@@ -34,3 +37,12 @@ class JSONWriterPipeline(object):
         if self.file:
             LOG.debug('Write to file complete: %s' %spider.out_file)
             self.file.close()
+
+
+class ContentDownloadPipeline(object):
+    def process_item(self, item, spider):
+        relativePath = spider.out_dir + urlparse(item['url']).path
+        ShellUtils.mkdirp(relativePath)
+
+        with open(fileName, 'w+b') as file:
+            file.write(item['content'])
