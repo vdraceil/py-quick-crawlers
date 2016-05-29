@@ -30,9 +30,11 @@ class PatternMatchSpider(BaseSpider):
     def parse_item(self, response):
         content = self.get_text_content(response)
 
+        item = FlexibleItem()
+        item['url'] = response.url
+
         # try to match up for the given pattern_dict
         hasMatch = False
-        item = FlexibleItem()
         for fieldName, pattern in self.pattern_dict.iteritems():
             item[fieldName] = re.findall(pattern, content)
             if not hasMatch and len(item[fieldName]):
