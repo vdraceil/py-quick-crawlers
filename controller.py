@@ -100,7 +100,7 @@ class SpiderController(object):
         for item in website_list:
             spider_args = {
                 'domain': URLUtils.get_domain_from_url(item[0]),
-                'start_url': URLUtils.get_complete_url(item[0]),
+                'start_url': URLUtils.reform_url(item[0]),
                 'max_depth': item[1],
             }
 

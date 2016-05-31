@@ -2,6 +2,8 @@ import re
 import os
 import errno
 
+from urlparse import urljoin
+
 from constants import Regex
 
 
@@ -20,8 +22,8 @@ class URLUtils(object):
         return domain_prefix + domain 
 
     @staticmethod
-    def get_complete_url(url):
-        # add '/' to the end of URLs which have no trailing path
+    def reform_url(url):
+        # add '/' to the end of URLs which have no trailing path or params
         # for consistency
         match = Regex.PT_COMPLETE_URL.match(url)
         if match:
