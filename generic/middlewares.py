@@ -57,7 +57,7 @@ class CustomDownloaderMiddleware(object):
     def is_invalid(self, request, spider):
         # a request is valid only if the request URL falls within the allowed
         # domains of the corresponding spider instance
-        domain = URLUtils.get_domain_from_url(request.url)
+        domain = URLUtils.get_domain(request.url)
 
         if domain == self.cur_domain:
             # don't even bother looking at spider's allowed domains

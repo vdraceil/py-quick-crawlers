@@ -3,13 +3,14 @@ import os
 import errno
 
 from urlparse import urljoin
+from urlparse import urlparse
 
 from constants import Regex
 
 
 class URLUtils(object):
     @staticmethod
-    def get_domain_from_url(url):
+    def get_domain(url):
         match = Regex.PT_DOMAIN_FROM_URL.match(url)
         if not match:
             raise InvalidArgumentError('Invalid URL: ' + url)
@@ -22,7 +23,7 @@ class URLUtils(object):
         return domain_prefix + domain 
 
     @staticmethod
-    def reform_url(url):
+    def reform(url):
         # add '/' to the end of URLs which have no trailing path or params
         # for consistency
         match = Regex.PT_COMPLETE_URL.match(url)
@@ -46,6 +47,14 @@ class URLUtils(object):
             params = re.sub('\d', '', uri[index+1:])
             uri = '%s?%s' %(url, params)
         return uri
+
+    @staticmethod
+    def get_complete_url(base_url, relative_url):
+        return urljoin(base_url, relative_url)
+
+    @staticmethod
+    def get_path(url):
+       return urlparse(url).path
 
 
 class ShellUtils(object):
