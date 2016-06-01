@@ -2,7 +2,6 @@ import logging
 import lxml.etree
 import xml.sax.saxutils as SAXUtils
 
-from scrapy.exceptions import CloseSpider
 from scrapy.contrib.spiders import Rule
 from scrapy.contrib.spiders import CrawlSpider
 from scrapy.contrib.linkextractors import LinkExtractor

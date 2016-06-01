@@ -1,6 +1,7 @@
 import re
 import logging
 
+from scrapy.exceptions import CloseSpider
 from generic.spiders import BaseSpider
 from generic.items import FlexibleItem
 
