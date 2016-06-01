@@ -41,8 +41,14 @@ class JSONWriterPipeline(object):
 
 class ContentDownloadPipeline(object):
     def process_item(self, item, spider):
-        relativePath = spider.out_dir + URLUtils.get_path(item['url'])
-        ShellUtils.mkdirp(relativePath)
+        file_path = os.path.join(spider.out_dir,
+                            URLUtils.get_domain(item['url']),
+                            URLUtils.get_path(item['url'])[1:])
+        dir_path = os.path.dirname(file_path)
 
-        with open(fileName, 'w+b') as file:
+        # make dir
+        ShellUtils.mkdirp(dir_path)
+
+        # dump content into file
+        with open(file_path, 'w+b') as file:
             file.write(item['content'])
