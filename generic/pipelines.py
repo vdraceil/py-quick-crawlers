@@ -2,9 +2,9 @@ import os
 import json
 import logging
 
-from urlparse import urlparse
 from scrapy.exceptions import DropItem
 
+from utils.general import URLUtils
 from utils.general import ShellUtils
 
 
@@ -41,7 +41,7 @@ class JSONWriterPipeline(object):
 
 class ContentDownloadPipeline(object):
     def process_item(self, item, spider):
-        relativePath = spider.out_dir + urlparse(item['url']).path
+        relativePath = spider.out_dir + URLUtils.get_path(item['url'])
         ShellUtils.mkdirp(relativePath)
 
         with open(fileName, 'w+b') as file:
