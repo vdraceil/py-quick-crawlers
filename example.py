@@ -31,7 +31,7 @@ out_file = './output0.txt'
 controller.pattern_match_crawl(website_list, pattern_dict, out_file)
 print "CRAWL COMPLETE!!"
 
-file_pattern = re.compile(r'.*\.html')
-out_dir = '.'
-controller.content_download_crawl(website_list, file_pattern, out_dir)
-print "CRAWL COMPLETE!!"
+# file_pattern = re.compile(r'.*\.html')
+# out_dir = '.'
+# controller.content_download_crawl(website_list, file_pattern, out_dir)
+# print "CRAWL COMPLETE!!"

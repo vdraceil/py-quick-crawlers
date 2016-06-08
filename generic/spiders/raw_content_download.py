@@ -2,18 +2,19 @@ import re
 import logging
 
 from scrapy.exceptions import CloseSpider
-from generic.spiders import BaseSpider
-from generic.raw_content_download.items import ContentInfoItem
+from generic.items import ContentInfoItem
+from generic.spiders.base import Spider as BaseSpider
 
 
 LOG = logging.getLogger(__name__)
 
-class RawContentDownloadSpider(BaseSpider):
+
+class Spider(BaseSpider):
     # overrides
     name = 'raw_content_download'
 
     def __init__(self, *args, **kwargs):
-        super(RawContentDownloadSpider, self).__init__()
+        super(Spider, self).__init__()
 
         try:
             self.allowed_domains = [ kwargs.get('domain', None) or args[0] ]

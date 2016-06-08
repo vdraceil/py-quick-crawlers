@@ -17,10 +17,7 @@ LOG = logging.getLogger(__name__)
 
 class SpiderController(object):
     def pattern_match_crawl(self, website_list, pattern_dict, out_file):
-        # set env variable so that scrapy knows what custom settings to load
-        os.environ['SCRAPY_SETTINGS_MODULE'] = 'generic.pattern_match.settings'
-
-        from generic.pattern_match.spiders import PatternMatchSpider
+        from generic.spiders.pattern_match import Spider as PatternMatchSpider
 
         def run_spider(settings, domain, start_url, max_depth):
             spider = PatternMatchSpider(domain, start_url,
@@ -75,15 +72,22 @@ class SpiderController(object):
                         'Expected - str, regex. Given - "%s"'
                         %(str(type(key)) + ',' + str(type(value))))
 
-            if not out_file or not os.path.isfile(out_file):
-                raise InvalidArgumentError('Arg "out_file" should be a valid dir')
+            if not out_file:
+                raise InvalidArgumentError('Arg "out_file" is mandatory')
 
         LOG.debug('pattern_match_crawl API Start - Params - '
                   'website_list=%s ; pattern_dict=%s ; out_file=%s'
                   %(website_list, pattern_dict, out_file))
+
         validate_args()
         parent = self
+
+        # retrive settings and customize as required
         settings = get_project_settings()
+        settings.set('ITEM_PIPELINES', {
+            'generic.pipelines.DuplicatesFilterPipeline': 100,
+            'generic.pipelines.JSONWriterPipeline': 900
+        });
 
         for item in website_list:
             spider_args = {
@@ -104,10 +108,7 @@ class SpiderController(object):
 
 
     def content_download_crawl(self, website_list, file_pattern, out_dir):
-        # set env variable so that scrapy knows what custom settings to load
-        os.environ['SCRAPY_SETTINGS_MODULE'] = 'generic.raw_content_download.settings'
-
-        from generic.raw_content_download.spiders import RawContentDownloadSpider
+        from generic.spiders.raw_content_download import Spider as RawContentDownloadSpider
 
         def run_spider(settings, domain, start_url, max_depth):
             spider = RawContentDownloadSpider(domain, start_url,
@@ -160,9 +161,15 @@ class SpiderController(object):
         LOG.debug('content_download_crawl API Start - Params - '
                   'website_list=%s ; file_pattern=%s ; out_dir=%s'
                   %(website_list, file_pattern, out_dir))
+
         validate_args()
         parent = self
+
+        # retrive settings and customize as required
         settings = get_project_settings()
+        settings.set('ITEM_PIPELINES', {
+            'generic.pipelines.ContentDownloadPipeline': 100,
+        });
 
         for item in website_list:
             spider_args = {

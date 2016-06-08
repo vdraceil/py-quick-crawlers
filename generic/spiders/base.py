@@ -13,7 +13,7 @@ from constants import Regex
 
 LOG = logging.getLogger(__name__)
 
-class BaseSpider(CrawlSpider):
+class Spider(CrawlSpider):
     # constants
     UNWANTED_HTML_ELEMENTS = ['script', 'noscript', 'style', 'link', 'head']
     UTF8_HTML_PARSER = lxml.etree.HTMLParser(encoding='utf-8')
@@ -26,7 +26,7 @@ class BaseSpider(CrawlSpider):
     )
 
     def __init__(self, *args, **kwargs):
-        super(BaseSpider, self).__init__()
+        super(Spider, self).__init__()
 
     def parse_start_url(self, response):
         return self.parse_item(response);
@@ -84,9 +84,9 @@ class BaseSpider(CrawlSpider):
         # make a tree from the page's html content and strip irrelevant tags
         try:
             root = lxml.etree.fromstring(content,
-                parser=BaseSpider.UTF8_HTML_PARSER)
+                parser=Spider.UTF8_HTML_PARSER)
             lxml.etree.strip_elements(root, lxml.etree.Comment,
-                *BaseSpider.UNWANTED_HTML_ELEMENTS)
+                *Spider.UNWANTED_HTML_ELEMENTS)
         except lxml.etree.XMLSyntaxError:
             return
 

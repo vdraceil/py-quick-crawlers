@@ -2,18 +2,18 @@ import re
 import logging
 
 from scrapy.exceptions import CloseSpider
-from generic.spiders import BaseSpider
 from generic.items import FlexibleItem
+from generic.spiders.base import Spider as BaseSpider
 
 
 LOG = logging.getLogger(__name__)
 
-class PatternMatchSpider(BaseSpider):
+class Spider(BaseSpider):
     # overrides
     name = 'pattern_match'
 
     def __init__(self, *args, **kwargs):
-        super(PatternMatchSpider, self).__init__()
+        super(Spider, self).__init__()
 
         try:
             self.allowed_domains = [ kwargs.get('domain', None) or args[0] ]

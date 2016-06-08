@@ -1,13 +1,14 @@
 # scrapy - code related settings
-BOT_NAME = 'raw_content_download'
-SPIDER_MODULES = ['generic.raw_content_download']
-NEWSPIDER_MODULE = 'generic.raw_content_download'
+BOT_NAME = 'scrapy_generic_spiders'
+SPIDER_MODULES = ['generic.spiders.pattern_match',
+                  'generic.spiders.raw_content_download']
+NEWSPIDER_MODULE = 'generic.spiders'
 LOG_ENABLED = True
 LOG_LEVEL = 'DEBUG'
 
 # pipelines
 ITEM_PIPELINES = {
-    'generic.pipelines.ContentDownloadPipeline': 900
+    # customized/overridden in APIs which invoke respective spiders
 }
 
 # middlewares
