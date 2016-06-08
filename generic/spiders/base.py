@@ -2,10 +2,9 @@ import logging
 import lxml.etree
 import xml.sax.saxutils as SAXUtils
 
-from scrapy.contrib.spiders import Rule
-from scrapy.contrib.spiders import CrawlSpider
-from scrapy.contrib.linkextractors import LinkExtractor
-from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
+from scrapy.spiders import Rule
+from scrapy.spiders import CrawlSpider
+from scrapy.linkextractors import LinkExtractor
 from scrapy.http.response.html import HtmlResponse
 
 from constants import Regex
@@ -20,10 +19,7 @@ class Spider(CrawlSpider):
 
     # overrides
     name = 'base'
-    rules = (
-        Rule(LinkExtractor(), callback='parse_item', follow=True),
-        Rule(SgmlLinkExtractor(), callback='parse_item', follow=True)
-    )
+    rules = (Rule(LinkExtractor(), callback='parse_item', follow=True),)
 
     def __init__(self, *args, **kwargs):
         super(Spider, self).__init__()

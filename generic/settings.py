@@ -3,23 +3,31 @@ BOT_NAME = 'scrapy_generic_spiders'
 SPIDER_MODULES = ['generic.spiders.pattern_match',
                   'generic.spiders.raw_content_download']
 NEWSPIDER_MODULE = 'generic.spiders'
-LOG_ENABLED = True
 LOG_LEVEL = 'DEBUG'
+LOG_ENABLED = False
 
 # pipelines
 ITEM_PIPELINES = {
     # customized/overridden in APIs which invoke respective spiders
 }
 
+# extensions
+EXTENSIONS = {
+    'scrapy.extensions.logstats.LogStats': None,
+    'scrapy.extensions.telnet.TelnetConsole': None,
+    'scrapy.extensions.corestats.CoreStats': None,
+}
+
 # middlewares
 SPIDER_MIDDLEWARES = {
     'generic.middlewares.DomainDepthMiddleware': 100,
-    'scrapy.contrib.spidermiddleware.depth.DepthMiddleware': None
+    'scrapy.spidermiddlewares.depth.DepthMiddleware': None
 }
 
 DOWNLOADER_MIDDLEWARES = {
     'generic.middlewares.CustomDownloaderMiddleware': 650,
-    'scrapy.contrib.downloadermiddleware.downloadtimeout.DownloadTimeoutMiddleware': 350
+    'scrapy.downloadermiddlewares.downloadtimeout.DownloadTimeoutMiddleware': 350,
+    'scrapy.downloadermiddlewares.stats.DownloaderStats': None
 }
 
 # how we identify ourselves to the target domains

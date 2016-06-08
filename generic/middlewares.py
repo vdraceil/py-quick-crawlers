@@ -5,7 +5,7 @@ from twisted.internet.error import TimeoutError as ServerTimeoutError, \
     ConnectionLost, TCPTimedOutError
 from twisted.internet.defer import TimeoutError as UserTimeoutError
 from scrapy.exceptions import IgnoreRequest
-from scrapy.contrib.spidermiddleware.depth import DepthMiddleware
+from scrapy.spidermiddlewares.depth import DepthMiddleware
 
 from utils.general import URLUtils
 
