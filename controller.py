@@ -2,8 +2,6 @@ import re
 import os
 import logging
 
-from scrapy import log
-from scrapy import signals
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 
@@ -18,43 +16,9 @@ LOG = logging.getLogger(__name__)
 class SpiderController(object):
     SETTINGS = get_project_settings()
 
-    def pattern_match_crawl(self, website_list, pattern_dict, out_file):
+    def pattern_match_crawl(self, website_list, pattern_dict, out_file=None):
         def validate_args():
-            # overall parameter check - basic
-            if not isinstance(website_list, list):
-                raise InvalidArgumentError('Arg "website_list"' \
-                                        ' should be a list of tuples')
-            if len(website_list) == 0:
-                raise InvalidArgumentError('Arg "website_list"' \
-                                        ' should have at least one element')
-            if not isinstance(pattern_dict, dict):
-                raise InvalidArgumentError('Arg "pattern_dict"' \
-                                           ' should be a dict')
-
-            for item in website_list:
-                # base type check
-                if not isinstance(item, tuple) or len(item) != 2:
-                    raise InvalidArgumentError('All elements of "website_list"' \
-                        ' are expected to be tuples of size 2 - ' \
-                        '(<url>, <depth>')
-                url, depth = item
-
-                # sub-parameter type checks
-                type_check = isinstance(url, basestring) and isinstance(depth, int)
-                if not type_check:
-                    raise InvalidArgumentError('Args type check failed. ' \
-                        'For "website_list" ' \
-                        'Expected - str,int. Given - "%s"'
-                        %(','.join((str(type(x) for x in item)))))
-
-                # sub-parameter value checks
-                match = Regex.PT_DOMAIN_FROM_URL.match(url)
-                if not match:
-                    raise InvalidArgumentError('Invalid URL - "%s"' % url)
-
-                if depth <= 0:
-                    raise InvalidArgumentError('Depth parameter should ' \
-                                            'be strictly greater than 0')
+            self._validate_website_list(website_list)
 
             for key,value in pattern_dict.iteritems():
                 type_check = isinstance(key, basestring) and \
@@ -65,15 +29,12 @@ class SpiderController(object):
                         'Expected - str, regex. Given - "%s"'
                         %(str(type(key)) + ',' + str(type(value))))
 
-            if not out_file:
-                raise InvalidArgumentError('Arg "out_file" is mandatory')
-
         LOG.debug('pattern_match_crawl API Start - Params - '
                   'website_list=%s ; pattern_dict=%s ; out_file=%s'
                   %(website_list, pattern_dict, out_file))
 
+        # check args before proceeding
         validate_args()
-        parent = self
 
         # customize settings
         SpiderController.SETTINGS.set('ITEM_PIPELINES',
@@ -102,54 +63,23 @@ class SpiderController(object):
         process.start() # blocks here until all crawling is done
 
 
-    def content_download_crawl(self, website_list, file_pattern, out_dir):
+    def content_download_crawl(self, website_list, file_pattern, out_dir=None):
         def validate_args():
-            # overall parameter check - basic
-            if not isinstance(website_list, list):
-                raise InvalidArgumentError('Arg "website_list"' \
-                                        ' should be a list of tuples')
-            if len(website_list) == 0:
-                raise InvalidArgumentError('Arg "website_list"' \
-                                        ' should have at least one element')
-
-            for item in website_list:
-                # base type check
-                if not isinstance(item, tuple) or len(item) != 2:
-                    raise InvalidArgumentError('All elements of "website_list"' \
-                        ' are expected to be tuples of size 2 - ' \
-                        '(<url>, <depth>')
-                url, depth = item
-
-                # sub-parameter type checks
-                type_check = isinstance(url, basestring) and isinstance(depth, int)
-                if not type_check:
-                    raise InvalidArgumentError('Args type check failed. ' \
-                        'For "website_list" ' \
-                        'Expected - str,int. Given - "%s"'
-                        %(','.join((str(type(x) for x in item)))))
-
-                # sub-parameter value checks
-                match = Regex.PT_DOMAIN_FROM_URL.match(url)
-                if not match:
-                    raise InvalidArgumentError('Invalid URL - "%s"' % url)
-
-                if depth <= 0:
-                    raise InvalidArgumentError('Depth parameter should ' \
-                                            'be strictly greater than 0')
+            self._validate_website_list(website_list)
 
             if not isinstance(file_pattern, re._pattern_type):
                 raise InvalidArgumentError('Arg "file_pattern" should be a '
                                            'valid compiled regex')
 
-            if not out_dir or not os.path.isdir(out_dir):
+            if out_dir and not os.path.isdir(out_dir):
                 raise InvalidArgumentError('Arg "out_dir" should be a valid dir')
 
         LOG.debug('content_download_crawl API Start - Params - '
                   'website_list=%s ; file_pattern=%s ; out_dir=%s'
                   %(website_list, file_pattern, out_dir))
 
+        # check args before proceeding
         validate_args()
-        parent = self
 
         # customize settings
         SpiderController.SETTINGS.set('ITEM_PIPELINES',
@@ -176,6 +106,39 @@ class SpiderController(object):
             LOG.debug('Kicking off Scrapy Spider - %s' %spider_args)
             process.crawl(RawContentDownloadSpider, **spider_args)
         process.start() # blocks here until all crawling is done
+
+    def _validate_website_list(self, website_list):
+        if not isinstance(website_list, list):
+            raise InvalidArgumentError('Arg "website_list"' \
+                                    ' should be a list of tuples')
+        if len(website_list) == 0:
+            raise InvalidArgumentError('Arg "website_list"' \
+                                    ' should have at least one element')
+
+        for item in website_list:
+            # base type check
+            if not isinstance(item, tuple) or len(item) != 2:
+                raise InvalidArgumentError('All elements of "website_list"' \
+                    ' are expected to be tuples of size 2 - ' \
+                    '(<url>, <depth>')
+            url, depth = item
+
+            # sub-parameter type checks
+            type_check = isinstance(url, basestring) and isinstance(depth, int)
+            if not type_check:
+                raise InvalidArgumentError('Args type check failed. ' \
+                    'For "website_list" ' \
+                    'Expected - str,int. Given - "%s"'
+                    %(','.join((str(type(x) for x in item)))))
+
+            # sub-parameter value checks
+            match = Regex.PT_DOMAIN_FROM_URL.match(url)
+            if not match:
+                raise InvalidArgumentError('Invalid URL - "%s"' % url)
+
+            if depth <= 0:
+                raise InvalidArgumentError('Depth parameter should ' \
+                                        'be strictly greater than 0')
 
 
 class InvalidArgumentError(Exception): pass
