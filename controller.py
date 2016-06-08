@@ -12,6 +12,8 @@ from generic.spiders.raw_content_download import Spider as RawContentDownloadSpi
 
 
 LOG = logging.getLogger(__name__)
+# disable all Scrapy logs
+logging.getLogger('scrapy').propagate = False
 
 class SpiderController(object):
     SETTINGS = get_project_settings()
