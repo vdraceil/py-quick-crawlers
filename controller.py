@@ -82,7 +82,7 @@ class SpiderController(object):
         validate_args()
 
         # make out_dir if it does not exist already
-        ShellUtils.mkdirp(out_dir)
+        out_dir and ShellUtils.mkdirp(out_dir)
 
         # customize settings
         SpiderController.SETTINGS.set('ITEM_PIPELINES',
