@@ -2,11 +2,9 @@ import re
 import os
 import logging
 
-from billiard import Process
-from twisted.internet import reactor
 from scrapy import log
 from scrapy import signals
-from scrapy.crawler import Crawler
+from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 
 from utils.general import URLUtils
@@ -21,13 +19,6 @@ class SpiderController(object):
     SETTINGS = get_project_settings()
 
     def pattern_match_crawl(self, website_list, pattern_dict, out_file):
-        def run_spider(domain, start_url, max_depth):
-            spider = PatternMatchSpider(domain, start_url,
-                                       max_depth, pattern_dict)
-            crawler = ScrapyCrawler(SpiderController.SETTINGS, spider)
-            crawler.start()
-            crawler.join()
-
         def validate_args():
             # overall parameter check - basic
             if not isinstance(website_list, list):
@@ -89,11 +80,15 @@ class SpiderController(object):
             SpiderSettingOverrides.PATTERN_MATCH['ITEM_PIPELINES'])
         SpiderController.SETTINGS.set('OUT_FILE', out_file)
 
+        # initiate CrawlerProcess
+        process = CrawlerProcess(SpiderController.SETTINGS)
+
         for item in website_list:
             spider_args = {
                 'domain': URLUtils.get_domain(item[0]),
                 'start_url': URLUtils.reform(item[0]),
                 'max_depth': item[1],
+                'pattern_dict': pattern_dict
             }
 
             # according to Scrapy the current page is at a depth 0
@@ -103,17 +98,11 @@ class SpiderController(object):
 
             # kick off the scrapy crawler
             LOG.debug('Kicking off Scrapy Spider - %s' %spider_args)
-            run_spider(**spider_args)
+            process.crawl(PatternMatchSpider, **spider_args)
+        process.start() # blocks here until all crawling is done
 
 
     def content_download_crawl(self, website_list, file_pattern, out_dir):
-        def run_spider(domain, start_url, max_depth):
-            spider = RawContentDownloadSpider(domain, start_url,
-                                              max_depth, file_pattern)
-            crawler = ScrapyCrawler(SpiderController.SETTINGS, spider)
-            crawler.start()
-            crawler.join()
-
         def validate_args():
             # overall parameter check - basic
             if not isinstance(website_list, list):
@@ -167,11 +156,15 @@ class SpiderController(object):
             SpiderSettingOverrides.RAW_CONTENT_DOWNLOAD['ITEM_PIPELINES'])
         SpiderController.SETTINGS.set('OUT_DIR', out_dir)
 
+        # initiate CrawlerProcess
+        process = CrawlerProcess(SpiderController.SETTINGS)
+
         for item in website_list:
             spider_args = {
                 'domain': URLUtils.get_domain(item[0]),
                 'start_url': URLUtils.reform(item[0]),
                 'max_depth': item[1],
+                'file_pattern': file_pattern
             }
 
             # according to Scrapy the current page is at a depth 0
@@ -181,23 +174,8 @@ class SpiderController(object):
 
             # kick off the scrapy crawler
             LOG.debug('Kicking off Scrapy Spider - %s' %spider_args)
-            run_spider(**spider_args)
-
-
-class ScrapyCrawler(Process):
-    def __init__(self, settings, spider):
-        super(ScrapyCrawler, self).__init__()
-        self.crawler = Crawler(settings)
-        self.crawler.configure()
-        self.crawler.signals.connect(reactor.stop,
-                                        signal=signals.spider_closed)
-        self.spider = spider
-
-    def run(self):
-        self.crawler.crawl(self.spider)
-        self.crawler.start()
-        # blocks till the spider finishes execution
-        reactor.run()
+            process.crawl(RawContentDownloadSpider, **spider_args)
+        process.start() # blocks here until all crawling is done
 
 
 class InvalidArgumentError(Exception): pass
