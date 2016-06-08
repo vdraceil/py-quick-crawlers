@@ -2,11 +2,6 @@ import re
 import string
 
 
-class Scrapy(object):
-    SCRAPY_STATE_DIRS = ['./requests.queue']
-    SCRAPY_STATE_FILES = ['./requests.seen', './spider.state']
-
-
 class Regex(object):
     PT_COMPLETE_URL = re.compile(r'^https?://[^/]+(/.*)?')
     PT_DOMAIN_FROM_URL = re.compile(
@@ -19,3 +14,18 @@ class Regex(object):
     PT_NON_PRINTABLE_CHARS = re.compile('[\x00-\x01](?![\x00-\x0f])')
 
     PT_EMAIL = re.compile(r'[a-zA-Z0-9_\.+\-]+@[a-zA-Z0-9\-]+\.[a-zA-Z0-9\-\.]+')
+
+
+class SpiderSettingOverrides(object):
+    PATTERN_MATCH = {
+        'ITEM_PIPELINES': {
+            'generic.pipelines.DuplicatesFilterPipeline': 100,
+            'generic.pipelines.JSONWriterPipeline': 900
+        }
+    }
+
+    RAW_CONTENT_DOWNLOAD = {
+        'ITEM_PIPELINES': {
+            'generic.pipelines.ContentDownloadPipeline': 100
+        }
+    }

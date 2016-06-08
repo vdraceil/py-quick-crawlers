@@ -9,20 +9,26 @@ from scrapy import signals
 from scrapy.crawler import Crawler
 from scrapy.utils.project import get_project_settings
 
-from constants import Regex
+from constants import Regex, SpiderSettingOverrides
 from utils.general import URLUtils
 
 
 LOG = logging.getLogger(__name__)
 
 class SpiderController(object):
+    SETTINGS = get_project_settings()
+
     def pattern_match_crawl(self, website_list, pattern_dict, out_file):
         from generic.spiders.pattern_match import Spider as PatternMatchSpider
 
-        def run_spider(settings, domain, start_url, max_depth):
+        # customize settings
+        SpiderController.SETTINGS.set('ITEM_PIPELINES',
+            SpiderSettingOverrides.PATTERN_MATCH['ITEM_PIPELINES'])
+
+        def run_spider(domain, start_url, max_depth):
             spider = PatternMatchSpider(domain, start_url,
                                        max_depth, pattern_dict, out_file)
-            crawler = ScrapyCrawler(settings, spider)
+            crawler = ScrapyCrawler(SpiderController.SETTINGS, spider)
             crawler.start()
             crawler.join()
 
@@ -82,16 +88,8 @@ class SpiderController(object):
         validate_args()
         parent = self
 
-        # retrive settings and customize as required
-        settings = get_project_settings()
-        settings.set('ITEM_PIPELINES', {
-            'generic.pipelines.DuplicatesFilterPipeline': 100,
-            'generic.pipelines.JSONWriterPipeline': 900
-        });
-
         for item in website_list:
             spider_args = {
-                'settings': settings,
                 'domain': URLUtils.get_domain(item[0]),
                 'start_url': URLUtils.reform(item[0]),
                 'max_depth': item[1],
@@ -110,10 +108,14 @@ class SpiderController(object):
     def content_download_crawl(self, website_list, file_pattern, out_dir):
         from generic.spiders.raw_content_download import Spider as RawContentDownloadSpider
 
-        def run_spider(settings, domain, start_url, max_depth):
+        # customize settings
+        SpiderController.SETTINGS.set('ITEM_PIPELINES',
+            SpiderSettingOverrides.RAW_CONTENT_DOWNLOAD['ITEM_PIPELINES'])
+
+        def run_spider(domain, start_url, max_depth):
             spider = RawContentDownloadSpider(domain, start_url,
                                               max_depth, file_pattern, out_dir)
-            crawler = ScrapyCrawler(settings, spider)
+            crawler = ScrapyCrawler(SpiderController.SETTINGS, spider)
             crawler.start()
             crawler.join()
 
@@ -165,15 +167,8 @@ class SpiderController(object):
         validate_args()
         parent = self
 
-        # retrive settings and customize as required
-        settings = get_project_settings()
-        settings.set('ITEM_PIPELINES', {
-            'generic.pipelines.ContentDownloadPipeline': 100,
-        });
-
         for item in website_list:
             spider_args = {
-                'settings': settings,
                 'domain': URLUtils.get_domain(item[0]),
                 'start_url': URLUtils.reform(item[0]),
                 'max_depth': item[1],
