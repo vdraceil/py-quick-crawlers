@@ -26,8 +26,12 @@ class JSONWriterPipeline(object):
     def __init__(self):
         self.file = None
 
+    def _get_out_file(self, settings):
+        return settings.get('OUT_FILE') \
+            or settings.get('DEFAULT_OUT_FILE') + '.json'
+
     def process_item(self, item, spider):
-        out_file = spider.settings.get('OUT_FILE')
+        out_file = self._get_out_file(spider.settings)
         if not self.file:
             LOG.debug('Write to file initiated')
             self.file = open(out_file, 'a')
@@ -35,15 +39,18 @@ class JSONWriterPipeline(object):
         return item
 
     def close_spider(self, spider):
-        out_file = spider.settings.get('OUT_FILE')
+        out_file = self._get_out_file(spider.settings)
         if self.file:
             LOG.debug('Write to file complete: %s' %out_file)
             self.file.close()
 
 
 class ContentDownloadPipeline(object):
+    def _get_out_dir(self, settings):
+        return settings.get('OUT_DIR') or settings.get('DEFAULT_OUT_DIR')
+
     def process_item(self, item, spider):
-        out_dir = spider.settings.get('OUT_DIR')
+        out_dir = self._get_out_dir(spider.settings)
         file_path = os.path.join(out_dir,
                             URLUtils.get_domain(item['url']),
                             URLUtils.get_path(item['url'])[1:])

@@ -39,3 +39,5 @@ DOWNLOAD_DELAY = 0.2   # 200 milli-seconds
 DOWNLOAD_TIMEOUT = 120  # seconds
 
 # custom
+DEFAULT_OUT_DIR = '.'
+DEFAULT_OUT_FILE = 'default'
