@@ -6,6 +6,7 @@ from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 
 from utils.general import URLUtils
+from utils.general import ShellUtils
 from constants import Regex, SpiderSettingOverrides
 from generic.spiders.pattern_match import Spider as PatternMatchSpider
 from generic.spiders.raw_content_download import Spider as RawContentDownloadSpider
@@ -73,15 +74,15 @@ class SpiderController(object):
                 raise InvalidArgumentError('Arg "file_pattern" should be a '
                                            'valid compiled regex')
 
-            if out_dir and not os.path.isdir(out_dir):
-                raise InvalidArgumentError('Arg "out_dir" should be a valid dir')
-
         LOG.debug('content_download_crawl API Start - Params - '
                   'website_list=%s ; file_pattern=%s ; out_dir=%s'
                   %(website_list, file_pattern, out_dir))
 
         # check args before proceeding
         validate_args()
+
+        # make out_dir if it does not exist already
+        ShellUtils.mkdirp(out_dir)
 
         # customize settings
         SpiderController.SETTINGS.set('ITEM_PIPELINES',
