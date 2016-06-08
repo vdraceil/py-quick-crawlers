@@ -5,9 +5,10 @@ from scrapy.exceptions import CloseSpider
 from generic.items import ContentInfoItem
 from generic.spiders.base import Spider as BaseSpider
 
+from utils.general import URLUtils
+
 
 LOG = logging.getLogger(__name__)
-
 
 class Spider(BaseSpider):
     # overrides
@@ -29,8 +30,8 @@ class Spider(BaseSpider):
             %(self.start_urls[0], self.allowed_domains[0]))
 
     def parse_item(self, response):
-        # TODO: Handle file_pattern arg
-        content = self.get_raw_content(response)
-
-        item = ContentInfoItem(url=response.url, content=content)
-        yield item
+        # yield the item only if it passes through the file_pattern filter
+        if re.match(self.file_pattern, URLUtils.get_file_name(response.url)):
+            content = self.get_raw_content(response)
+            item = ContentInfoItem(url=response.url, content=content)
+            yield item

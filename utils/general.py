@@ -56,6 +56,10 @@ class URLUtils(object):
     def get_path(url):
        return urlparse(url).path
 
+    @staticmethod
+    def get_file_name(url):
+        return os.path.basename(URLUtils.get_path(url))
+
 
 class ShellUtils(object):
     @staticmethod
