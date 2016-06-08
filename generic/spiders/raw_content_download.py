@@ -21,15 +21,15 @@ class Spider(BaseSpider):
             self.start_urls = [ kwargs.get('start_url', None) or args[1] ]
             self.max_depth = kwargs.get('max_depth', None) or args[2]
             self.file_pattern = kwargs.get('file_pattern', None) or args[3]
-            self.out_dir = kwargs.get('out_dir', None) or args[4]
         except (KeyError, IndexError):
-            raise CloseSpider(reason='Expecting 5 mandatory params - ' \
-                '<domain>, <start_url>, <max_depth>, <file_pattern>, <out_dir>')
+            raise CloseSpider(reason='Expecting 4 mandatory params - ' \
+                '<domain>, <start_url>, <max_depth>, <file_pattern>')
 
         LOG.info('START URL: %s ; ALLOWED DOMAIN: %s' \
             %(self.start_urls[0], self.allowed_domains[0]))
 
     def parse_item(self, response):
+        # TODO: Handle file_pattern arg
         content = self.get_raw_content(response)
 
         item = ContentInfoItem(url=response.url, content=content)

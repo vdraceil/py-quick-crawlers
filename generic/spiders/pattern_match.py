@@ -20,10 +20,9 @@ class Spider(BaseSpider):
             self.start_urls = [ kwargs.get('start_url', None) or args[1] ]
             self.max_depth = kwargs.get('max_depth', None) or args[2]
             self.pattern_dict = kwargs.get('pattern_dict', None) or args[3]
-            self.out_file = kwargs.get('out_file', None) or args[4]
         except (KeyError, IndexError):
-            raise CloseSpider(reason='Expecting 5 mandatory params - ' \
-                '<domain>, <start_url>, <max_depth>, <pattern_dict>, <out_file>')
+            raise CloseSpider(reason='Expecting 4 mandatory params - ' \
+                '<domain>, <start_url>, <max_depth>, <pattern_dict>')
 
         LOG.info('START URL: %s ; ALLOWED DOMAIN: %s' \
             %(self.start_urls[0], self.allowed_domains[0]))
