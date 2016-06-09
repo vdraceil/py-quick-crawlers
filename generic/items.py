@@ -7,6 +7,13 @@ class FlexibleItem(Item):
             self.fields[key] = Field()
         super(FlexibleItem, self).__setitem__(key, value)
 
+    def get_keys(self):
+        return tuple('"%s"' %key for key in self.fields)
+
+    def get_values(self):
+        return tuple('"%s"' %(str(self.get(key)).replace('"', '""'))
+                     for key in self.fields)
+
 
 class ContentInfoItem(Item):
     url = Field()
