@@ -68,7 +68,7 @@ class CSVWriterPipeline(object):
         if not hasattr(item, 'get_keys') or not hasattr(item, 'get_values'):
             error = 'Skipping Item - missing CSV methods "get_keys"/"get_values"'
             LOG.debug('%s' %error)
-            raise DropItem(error)
+            return item
 
         if not self.file:
             self.out_file = self._get_out_file(spider.settings)
