@@ -3,7 +3,6 @@ import json
 import logging
 
 from scrapy.exceptions import DropItem
-from scrapy.exceptions import CloseSpider
 
 from utils.general import URLUtils
 from utils.general import ShellUtils
@@ -65,6 +64,12 @@ class CSVWriterPipeline(object):
             or settings.get('DEFAULT_OUT_FILE') + '.csv'
 
     def process_item(self, item, spider):
+        # validate item
+        if not hasattr(item, 'get_keys') or not hasattr(item, 'get_values'):
+            error = 'Skipping Item - missing CSV methods "get_keys"/"get_values"'
+            LOG.debug('%s' %error)
+            raise DropItem(error)
+
         if not self.file:
             self.out_file = self._get_out_file(spider.settings)
             LOG.debug('Write to file initiated: %s' %self.out_file)
