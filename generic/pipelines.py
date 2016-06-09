@@ -25,46 +25,46 @@ class DuplicatesFilterPipeline(object):
 class JSONWriterPipeline(object):
     def __init__(self):
         self.file = None
-        self.is_first_line = True
+        self.out_file = None
 
     def _get_out_file(self, settings):
         return settings.get('OUT_FILE') \
             or settings.get('DEFAULT_OUT_FILE') + '.json'
 
     def process_item(self, item, spider):
-        out_file = self._get_out_file(spider.settings)
         if not self.file:
-            LOG.debug('Write to file initiated')
-            self.file = open(out_file, 'w')
-            # write array open
-            self.file.write('[')
-
-        # write line
-        line = json.dumps(dict(item))
-        if self.is_first_line:
-            self.is_first_line = False
+            self.out_file = self._get_out_file(spider.settings)
+            LOG.debug('Write to file initiated: %s' %self.out_file)
+            self.file = open(self.out_file, 'w')
+            # write array open and first line
+            self.file.write('[' + json.dumps(dict(item)))
         else:
-            line = ',' + os.linesep + line
-        self.file.write(line)
+            line = ',' + os.linesep + json.dumps(dict(item))
+            self.file.write(line)
 
+        # return item to next pipeline, if any
         return item
 
     def close_spider(self, spider):
-        out_file = self._get_out_file(spider.settings)
         if self.file:
             # write array close
             self.file.write(']')
-            LOG.debug('Write to file complete: %s' %out_file)
+            LOG.debug('Write to file complete: %s' %self.out_file)
             self.file.close()
 
 
 class ContentDownloadPipeline(object):
+    def __init__(self):
+        self.out_dir = None
+
     def _get_out_dir(self, settings):
         return settings.get('OUT_DIR') or settings.get('DEFAULT_OUT_DIR')
 
     def process_item(self, item, spider):
-        out_dir = self._get_out_dir(spider.settings)
-        file_path = os.path.join(out_dir,
+        if not self.out_dir:
+            self.out_dir = self._get_out_dir(spider.settings)
+
+        file_path = os.path.join(self.out_dir,
                             URLUtils.get_domain(item['url']),
                             URLUtils.get_path(item['url'])[1:])
         dir_path = os.path.dirname(file_path)
@@ -75,3 +75,9 @@ class ContentDownloadPipeline(object):
         # dump content into file
         with open(file_path, 'w+b') as file:
             file.write(item['content'])
+
+        # return item to next pipeline, if any
+        return item
+
+    def close_spider(self, spider):
+        LOG.debug('Write to dir complete: %s' %self.out_dir)
