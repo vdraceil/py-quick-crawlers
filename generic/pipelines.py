@@ -25,6 +25,7 @@ class DuplicatesFilterPipeline(object):
 class JSONWriterPipeline(object):
     def __init__(self):
         self.file = None
+        self.is_first_line = True
 
     def _get_out_file(self, settings):
         return settings.get('OUT_FILE') \
@@ -34,13 +35,25 @@ class JSONWriterPipeline(object):
         out_file = self._get_out_file(spider.settings)
         if not self.file:
             LOG.debug('Write to file initiated')
-            self.file = open(out_file, 'a')
-        self.file.write(json.dumps(dict(item)) + os.linesep)
+            self.file = open(out_file, 'w')
+            # write array open
+            self.file.write('[')
+
+        # write line
+        line = json.dumps(dict(item))
+        if self.is_first_line:
+            self.is_first_line = False
+        else:
+            line = ',' + os.linesep + line
+        self.file.write(line)
+
         return item
 
     def close_spider(self, spider):
         out_file = self._get_out_file(spider.settings)
         if self.file:
+            # write array close
+            self.file.write(']')
             LOG.debug('Write to file complete: %s' %out_file)
             self.file.close()
 
