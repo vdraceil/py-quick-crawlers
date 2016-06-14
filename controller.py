@@ -19,7 +19,8 @@ logging.getLogger('scrapy').propagate = False
 class SpiderController(object):
     SETTINGS = get_project_settings()
 
-    def pattern_match_crawl(self, website_list, pattern_dict, out_file=None):
+    def pattern_match_crawl(self, website_list, pattern_dict,
+                            out_file=None, pipelineOverrides=None):
         def validate_args():
             self._validate_website_list(website_list)
 
@@ -40,8 +41,11 @@ class SpiderController(object):
         validate_args()
 
         # customize settings
-        SpiderController.SETTINGS.set('ITEM_PIPELINES',
-            SpiderSettingOverrides.PATTERN_MATCH['ITEM_PIPELINES'])
+        if not isinstance(pipelineOverrides, dict):
+            pipelineOverrides = None
+        pipelines = pipelineOverrides or \
+            SpiderSettingOverrides.PATTERN_MATCH['ITEM_PIPELINES']
+        SpiderController.SETTINGS.set('ITEM_PIPELINES', pipelines)
         SpiderController.SETTINGS.set('OUT_FILE', out_file)
 
         # initiate CrawlerProcess
@@ -85,8 +89,11 @@ class SpiderController(object):
         out_dir and ShellUtils.mkdirp(out_dir)
 
         # customize settings
-        SpiderController.SETTINGS.set('ITEM_PIPELINES',
-            SpiderSettingOverrides.RAW_CONTENT_DOWNLOAD['ITEM_PIPELINES'])
+        if not isinstance(pipelineOverrides, dict):
+            pipelineOverrides = None
+        pipelines = pipelineOverrides or \
+            SpiderSettingOverrides.RAW_CONTENT_DOWNLOAD['ITEM_PIPELINES']
+        SpiderController.SETTINGS.set('ITEM_PIPELINES', pipelines)
         SpiderController.SETTINGS.set('OUT_DIR', out_dir)
 
         # initiate CrawlerProcess
