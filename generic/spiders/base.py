@@ -31,26 +31,7 @@ class Spider(CrawlSpider):
         # inheriting children must implement this method
         pass
 
-    def get_raw_content(self, response):
-        # adjust depth for this project which starts at 1
-        current_page_depth = response.meta.get('depth', 0) + 1
-
-        LOG.debug('DEPTH:%s - URL:%s - Status:%s - ResponseType:%s'
-                  %(current_page_depth, response.url,
-                    response.status, response.__class__.__name__))
-
-        # skip pages which do not yield proper response codes
-        if response.status >= 400:
-            return
-
-        if self.max_depth == 0 and current_page_depth > 1:
-            return
-
-        # return the content as is
-        content = response.body
-        return content
-
-    def get_text_content(self, response):
+    def get_content(self, response, raw=False):
         # adjust depth for this project which starts at 1
         current_page_depth = response.meta.get('depth', 0) + 1
 
@@ -59,7 +40,7 @@ class Spider(CrawlSpider):
                     response.status, response.__class__.__name__))
 
         # skip pages which do not yield proper HTML responses
-        if response.status >= 400 and not isinstance(response, HtmlResponse):
+        if response.status >= 400:
             return
 
         # HACK: depth=0 in Scrapy implies an infinite crawl
@@ -68,6 +49,18 @@ class Spider(CrawlSpider):
         # TODO: Find an alternate way in which we do not even crawl all pages at
         # depth=1
         if self.max_depth == 0 and current_page_depth > 1:
+            return
+
+        fetch_content = self._raw_content if raw else self._text_content
+        return fetch_content(response)
+
+    def _raw_content(self, response):
+        return response.body
+
+    def _text_content(self, response):
+        # TODO: What about Text/JSON/Other response types?
+        # make sure it is an HtmlResponse
+        if not isinstance(response, HtmlResponse):
             return
 
         # remove any non-printable characters
@@ -109,5 +102,4 @@ class Spider(CrawlSpider):
 
         # unescape HTML entities
         content = SAXUtils.unescape(content)
-
         return content

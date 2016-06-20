@@ -28,7 +28,7 @@ class Spider(BaseSpider):
             %(self.start_urls[0], self.allowed_domains[0]))
 
     def parse_item(self, response):
-        content = self.get_text_content(response)
+        content = self.get_content(response)
 
         item = FlexibleItem()
         item['url'] = response.url

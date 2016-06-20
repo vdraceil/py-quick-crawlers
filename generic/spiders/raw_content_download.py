@@ -32,6 +32,6 @@ class Spider(BaseSpider):
     def parse_item(self, response):
         # yield the item only if it passes through the file_pattern filter
         if re.match(self.file_pattern, URLUtils.get_file_name(response.url)):
-            content = self.get_raw_content(response)
+            content = self.get_content(response, raw=True)
             item = ContentInfoItem(url=response.url, content=content)
             yield item
