@@ -19,10 +19,10 @@ logging.getLogger('scrapy').propagate = False
 class SpiderController(object):
     SETTINGS = get_project_settings()
 
-    def pattern_match_crawl(self, website_list, pattern_dict,
+    def pattern_match_crawl(self, target, pattern_dict,
                             out_file=None, pipelineOverrides=None):
         def validate_args():
-            self._validate_website_list(website_list)
+            self._validate_target(target)
 
             for key,value in pattern_dict.iteritems():
                 type_check = isinstance(key, basestring) and \
@@ -34,8 +34,8 @@ class SpiderController(object):
                         %(str(type(key)) + ',' + str(type(value))))
 
         LOG.debug('pattern_match_crawl API Start - Params - '
-                  'website_list=%s ; pattern_dict=%s ; out_file=%s'
-                  %(website_list, pattern_dict, out_file))
+                  'target=%s ; pattern_dict=%s ; out_file=%s'
+                  %(target, pattern_dict, out_file))
 
         # check args before proceeding
         validate_args()
@@ -51,7 +51,7 @@ class SpiderController(object):
         # initiate CrawlerProcess
         process = CrawlerProcess(SpiderController.SETTINGS)
 
-        for item in website_list:
+        for item in target:
             spider_args = {
                 'domain': URLUtils.get_domain(item[0]),
                 'start_url': URLUtils.reform(item[0]),
@@ -70,18 +70,18 @@ class SpiderController(object):
         process.start() # blocks here until all crawling is done
 
 
-    def content_download_crawl(self, website_list, file_pattern,
+    def content_download_crawl(self, target, file_pattern,
                                out_dir=None, pipelineOverrides=None):
         def validate_args():
-            self._validate_website_list(website_list)
+            self._validate_target(target)
 
             if not isinstance(file_pattern, re._pattern_type):
                 raise InvalidArgumentError('Arg "file_pattern" should be a '
                                            'valid compiled regex')
 
         LOG.debug('content_download_crawl API Start - Params - '
-                  'website_list=%s ; file_pattern=%s ; out_dir=%s'
-                  %(website_list, file_pattern, out_dir))
+                  'target=%s ; file_pattern=%s ; out_dir=%s'
+                  %(target, file_pattern, out_dir))
 
         # check args before proceeding
         validate_args()
@@ -100,7 +100,7 @@ class SpiderController(object):
         # initiate CrawlerProcess
         process = CrawlerProcess(SpiderController.SETTINGS)
 
-        for item in website_list:
+        for item in target:
             spider_args = {
                 'domain': URLUtils.get_domain(item[0]),
                 'start_url': URLUtils.reform(item[0]),
@@ -118,18 +118,18 @@ class SpiderController(object):
             process.crawl(RawContentDownloadSpider, **spider_args)
         process.start() # blocks here until all crawling is done
 
-    def _validate_website_list(self, website_list):
-        if not isinstance(website_list, list):
-            raise InvalidArgumentError('Arg "website_list"' \
+    def _validate_target(self, target):
+        if not isinstance(target, list):
+            raise InvalidArgumentError('Arg "target"' \
                                     ' should be a list of tuples')
-        if len(website_list) == 0:
-            raise InvalidArgumentError('Arg "website_list"' \
+        if len(target) == 0:
+            raise InvalidArgumentError('Arg "target"' \
                                     ' should have at least one element')
 
-        for item in website_list:
+        for item in target:
             # base type check
             if not isinstance(item, tuple) or len(item) != 2:
-                raise InvalidArgumentError('All elements of "website_list"' \
+                raise InvalidArgumentError('All elements of "target"' \
                     ' are expected to be tuples of size 2 - ' \
                     '(<url>, <depth>')
             url, depth = item
@@ -138,7 +138,7 @@ class SpiderController(object):
             type_check = isinstance(url, basestring) and isinstance(depth, int)
             if not type_check:
                 raise InvalidArgumentError('Args type check failed. ' \
-                    'For "website_list" ' \
+                    'For "target" ' \
                     'Expected - str,int. Given - "%s"'
                     %(','.join((str(type(x) for x in item)))))
 
