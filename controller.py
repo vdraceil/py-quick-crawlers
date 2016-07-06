@@ -70,7 +70,8 @@ class SpiderController(object):
         process.start() # blocks here until all crawling is done
 
 
-    def content_download_crawl(self, website_list, file_pattern, out_dir=None):
+    def content_download_crawl(self, website_list, file_pattern,
+                               out_dir=None, pipelineOverrides=None):
         def validate_args():
             self._validate_website_list(website_list)
 
