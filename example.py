@@ -23,17 +23,10 @@ pattern_dict = {
     'email': Regex.PT_EMAIL
 }
 
-# define custom pipelines
-pipelineOverrides = {
-    'generic.pipelines.DuplicatesFilterPipeline': 100,
-    'generic.pipelines.CSVWriterPipeline': 800,
-    'generic.pipelines.JSONWriterPipeline': 900
-}
-
 # invoke the Crawl API
 # it will block till it completes
-controller.pattern_match_crawl(target, pattern_dict,
-                               pipelineOverrides=pipelineOverrides)
+out_file = 'output.json'
+controller.pattern_match_crawl(target, pattern_dict,out_file)
 print "CRAWL COMPLETE!!"
 
 # file_pattern = re.compile(r'.*\.html')

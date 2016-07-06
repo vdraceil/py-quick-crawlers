@@ -20,7 +20,7 @@ class SpiderController(object):
     SETTINGS = get_project_settings()
 
     def pattern_match_crawl(self, target, pattern_dict,
-                            out_file=None, pipelineOverrides=None):
+                            out_file=None):
         def validate_args():
             self._validate_target(target)
 
@@ -41,11 +41,8 @@ class SpiderController(object):
         validate_args()
 
         # customize settings
-        if not isinstance(pipelineOverrides, dict):
-            pipelineOverrides = None
-        pipelines = pipelineOverrides or \
-            SpiderSettingOverrides.PATTERN_MATCH['ITEM_PIPELINES']
-        SpiderController.SETTINGS.set('ITEM_PIPELINES', pipelines)
+        SpiderController.SETTINGS.set('ITEM_PIPELINES',
+            SpiderSettingOverrides.PATTERN_MATCH['ITEM_PIPELINES'])
         SpiderController.SETTINGS.set('OUT_FILE', out_file)
 
         # initiate CrawlerProcess
@@ -71,7 +68,7 @@ class SpiderController(object):
 
 
     def content_download_crawl(self, target, file_pattern,
-                               out_dir=None, pipelineOverrides=None):
+                               out_dir=None):
         def validate_args():
             self._validate_target(target)
 
@@ -90,11 +87,8 @@ class SpiderController(object):
         out_dir and ShellUtils.mkdirp(out_dir)
 
         # customize settings
-        if not isinstance(pipelineOverrides, dict):
-            pipelineOverrides = None
-        pipelines = pipelineOverrides or \
-            SpiderSettingOverrides.RAW_CONTENT_DOWNLOAD['ITEM_PIPELINES']
-        SpiderController.SETTINGS.set('ITEM_PIPELINES', pipelines)
+        SpiderController.SETTINGS.set('ITEM_PIPELINES',
+            SpiderSettingOverrides.RAW_CONTENT_DOWNLOAD['ITEM_PIPELINES'])
         SpiderController.SETTINGS.set('OUT_DIR', out_dir)
 
         # initiate CrawlerProcess
