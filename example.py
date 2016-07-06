@@ -29,7 +29,7 @@ out_file = 'output.json'
 controller.pattern_match_crawl(target, pattern_dict,out_file)
 print "CRAWL COMPLETE!!"
 
-# file_pattern = re.compile(r'.*\.html')
+# pattern_list = [re.compile(r'.*\.html')]
 # out_dir = 'output'
-# controller.content_download_crawl(target, file_pattern, out_dir)
+# controller.content_download_crawl(target, pattern_list, out_dir)
 # print "CRAWL COMPLETE!!"

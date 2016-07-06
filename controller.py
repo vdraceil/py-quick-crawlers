@@ -67,18 +67,24 @@ class SpiderController(object):
         process.start() # blocks here until all crawling is done
 
 
-    def content_download_crawl(self, target, file_pattern,
+    def content_download_crawl(self, target, pattern_list,
                                out_dir=None):
         def validate_args():
             self._validate_target(target)
 
-            if not isinstance(file_pattern, re._pattern_type):
-                raise InvalidArgumentError('Arg "file_pattern" should be a '
-                                           'valid compiled regex')
+            if not isinstance(pattern_list, list) and \
+            not isinstance(pattern_list, tuple):
+                raise InvalidArgumentError('Arg "pattern_list" should be a '
+                                           'list or a tuple')
+
+            for pattern in pattern_list:
+                if not isinstance(pattern, re._pattern_type):
+                    raise InvalidArgumentError('Each item of "pattern_list" '
+                        'should be a valid compiled regex')
 
         LOG.debug('content_download_crawl API Start - Params - '
-                  'target=%s ; file_pattern=%s ; out_dir=%s'
-                  %(target, file_pattern, out_dir))
+                  'target=%s ; pattern_list=%s ; out_dir=%s'
+                  %(target, pattern_list, out_dir))
 
         # check args before proceeding
         validate_args()
@@ -99,7 +105,7 @@ class SpiderController(object):
                 'domain': URLUtils.get_domain(item[0]),
                 'start_url': URLUtils.reform(item[0]),
                 'max_depth': item[1],
-                'file_pattern': file_pattern
+                'pattern_list': pattern_list
             }
 
             # according to Scrapy the current page is at a depth 0
