@@ -1,6 +1,8 @@
 import re
 import logging
 
+from scrapy.spiders import Rule
+from scrapy.linkextractors import LinkExtractor
 from scrapy.exceptions import CloseSpider
 from generic.items import FileDownloadItem
 from generic.spiders.base import Spider as BaseSpider
@@ -13,6 +15,7 @@ LOG = logging.getLogger(__name__)
 class Spider(BaseSpider):
     # overrides
     name = 'raw_content_download'
+    rules = (Rule(LinkExtractor(deny_extensions=()), callback='parse_item', follow=True),)
 
     def __init__(self, *args, **kwargs):
         super(Spider, self).__init__()
