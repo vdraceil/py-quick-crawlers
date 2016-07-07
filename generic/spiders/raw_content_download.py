@@ -2,7 +2,7 @@ import re
 import logging
 
 from scrapy.exceptions import CloseSpider
-from generic.items import ContentInfoItem
+from generic.items import FileDownloadItem
 from generic.spiders.base import Spider as BaseSpider
 
 from utils.general import URLUtils
@@ -33,6 +33,5 @@ class Spider(BaseSpider):
         # yield the item only if it passes through the pattern_list filter
         for pattern in self.pattern_list:
             if re.match(pattern, URLUtils.get_file_name(response.url)):
-                content = self.get_content(response, raw=True)
-                item = ContentInfoItem(url=response.url, content=content)
+                item = FileDownloadItem(file_urls=[response.url])
                 yield item

@@ -15,6 +15,6 @@ class FlexibleItem(Item):
                      for key in self.fields)
 
 
-class ContentInfoItem(Item):
-    url = Field()
-    content = Field()
+class FileDownloadItem(Item):
+    file_urls = Field()
+    files = Field()

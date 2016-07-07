@@ -26,6 +26,6 @@ class SpiderSettingOverrides(object):
 
     RAW_CONTENT_DOWNLOAD = {
         'ITEM_PIPELINES': {
-            'generic.pipelines.ContentDownloadPipeline': 100
+            'scrapy.pipelines.files.FilesPipeline': 100
         }
     }

@@ -95,7 +95,7 @@ class SpiderController(object):
         # customize settings
         SpiderController.SETTINGS.set('ITEM_PIPELINES',
             SpiderSettingOverrides.RAW_CONTENT_DOWNLOAD['ITEM_PIPELINES'])
-        SpiderController.SETTINGS.set('OUT_DIR', out_dir)
+        SpiderController.SETTINGS.set('FILES_STORE', out_dir)
 
         # initiate CrawlerProcess
         process = CrawlerProcess(SpiderController.SETTINGS)
