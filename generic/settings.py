@@ -46,6 +46,9 @@ DOWNLOAD_DELAY = 0.2   # 200 milli-seconds
 # the amount of time that the downloader will wait before timing out
 DOWNLOAD_TIMEOUT = 120  # seconds
 
+# disable max size file download limitation
+DOWNLOAD_WARNSIZE = 0
+
 # custom
 DEFAULT_OUT_DIR = '.'
 DEFAULT_OUT_FILE = 'default'
