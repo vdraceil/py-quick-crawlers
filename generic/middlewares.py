@@ -4,7 +4,6 @@ from twisted.internet.error import TimeoutError as ServerTimeoutError, \
     DNSLookupError, ConnectionRefusedError, ConnectionDone, ConnectError, \
     ConnectionLost, TCPTimedOutError
 from twisted.internet.defer import TimeoutError as UserTimeoutError
-from scrapy.exceptions import IgnoreRequest
 from scrapy.spidermiddlewares.depth import DepthMiddleware
 
 
@@ -29,5 +28,5 @@ class CustomDownloaderMiddleware(object):
         if isinstance(exception, self.EXCEPTIONS_TO_IGNORE):
             LOG.debug('Skipping URL "%s" due to Exception "%s"'
                       %(request.url, exception.__class__.__name__))
-            return IgnoreRequest()
+            return None
         return request
