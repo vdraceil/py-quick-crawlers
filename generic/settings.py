@@ -1,7 +1,7 @@
 # scrapy - code related settings
 BOT_NAME = 'scrapy_generic_spiders'
 SPIDER_MODULES = ['generic.spiders.pattern_match',
-                  'generic.spiders.raw_content_download']
+                  'generic.spiders.content_download']
 NEWSPIDER_MODULE = 'generic.spiders'
 LOG_LEVEL = 'DEBUG'
 LOG_ENABLED = False

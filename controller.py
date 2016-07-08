@@ -9,7 +9,7 @@ from utils.general import URLUtils
 from utils.general import ShellUtils
 from constants import Regex, SpiderSettingOverrides
 from generic.spiders.pattern_match import Spider as PatternMatchSpider
-from generic.spiders.raw_content_download import Spider as RawContentDownloadSpider
+from generic.spiders.content_download import Spider as ContentDownloadSpider
 
 
 LOG = logging.getLogger(__name__)
@@ -95,7 +95,7 @@ class SpiderController(object):
 
         # customize settings
         SpiderController.SETTINGS.set('ITEM_PIPELINES',
-            SpiderSettingOverrides.RAW_CONTENT_DOWNLOAD['ITEM_PIPELINES'])
+            SpiderSettingOverrides.CONTENT_DOWNLOAD['ITEM_PIPELINES'])
         SpiderController.SETTINGS.set('FILES_STORE', out_dir)
         SpiderController.SETTINGS.set('FILES_STORE_ENABLE_DIR_STRUCTURE',
                                       enable_dir_structure)
@@ -118,7 +118,7 @@ class SpiderController(object):
 
             # kick off the scrapy crawler
             LOG.debug('Kicking off Scrapy Spider - %s' %spider_args)
-            process.crawl(RawContentDownloadSpider, **spider_args)
+            process.crawl(ContentDownloadSpider, **spider_args)
         process.start() # blocks here until all crawling is done
 
     def _validate_target(self, target):

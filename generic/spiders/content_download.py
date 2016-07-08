@@ -14,7 +14,7 @@ LOG = logging.getLogger(__name__)
 
 class Spider(BaseSpider):
     # overrides
-    name = 'raw_content_download'
+    name = 'content_download'
     rules = (Rule(LinkExtractor(deny_extensions=()), callback='parse_item', follow=True),)
 
     def __init__(self, *args, **kwargs):
@@ -36,5 +36,8 @@ class Spider(BaseSpider):
         # yield the item only if it passes through the pattern_list filter
         for pattern in self.pattern_list:
             if re.match(pattern, URLUtils.get_file_name(response.url)):
+                LOG.debug('URL Pattern Match: %s' %response.url)
                 item = FileDownloadItem(file_urls=[response.url])
                 yield item
+            else:
+                LOG.debug('URL Skip: %s' %response.url)

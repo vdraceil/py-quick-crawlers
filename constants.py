@@ -24,7 +24,7 @@ class SpiderSettingOverrides(object):
         }
     }
 
-    RAW_CONTENT_DOWNLOAD = {
+    CONTENT_DOWNLOAD = {
         'ITEM_PIPELINES': {
             'generic.pipelines.ContentDownloadPipeline': 100
         }
