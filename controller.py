@@ -20,7 +20,7 @@ class SpiderController(object):
     SETTINGS = get_project_settings()
 
     def pattern_match_crawl(self, target, pattern_dict,
-                            out_file=None):
+                            out_file=None, feed_type='JSON'):
         def validate_args():
             self._validate_target(target)
 
@@ -34,8 +34,8 @@ class SpiderController(object):
                         %(str(type(key)) + ',' + str(type(value))))
 
         LOG.debug('pattern_match_crawl API Start - Params - '
-                  'target=%s ; pattern_dict=%s ; out_file=%s'
-                  %(target, pattern_dict, out_file))
+                  'target=%s ; pattern_dict=%s ; out_file=%s ; feed_type=%s'
+                  %(target, pattern_dict, out_file, feed_type))
 
         # check args before proceeding
         validate_args()
@@ -44,6 +44,7 @@ class SpiderController(object):
         SpiderController.SETTINGS.set('ITEM_PIPELINES',
             SpiderSettingOverrides.PATTERN_MATCH['ITEM_PIPELINES'])
         SpiderController.SETTINGS.set('OUT_FILE', out_file)
+        SpiderController.SETTINGS.set('FEED_TYPE', feed_type)
 
         # initiate CrawlerProcess
         process = CrawlerProcess(SpiderController.SETTINGS)
@@ -68,7 +69,7 @@ class SpiderController(object):
 
 
     def content_download_crawl(self, target, pattern_list,
-                               out_dir=None):
+                               out_dir=None, enable_dir_structure=False):
         def validate_args():
             self._validate_target(target)
 
@@ -96,6 +97,8 @@ class SpiderController(object):
         SpiderController.SETTINGS.set('ITEM_PIPELINES',
             SpiderSettingOverrides.RAW_CONTENT_DOWNLOAD['ITEM_PIPELINES'])
         SpiderController.SETTINGS.set('FILES_STORE', out_dir)
+        SpiderController.SETTINGS.set('FILES_STORE_ENABLE_DIR_STRUCTURE',
+                                      enable_dir_structure)
 
         # initiate CrawlerProcess
         process = CrawlerProcess(SpiderController.SETTINGS)
