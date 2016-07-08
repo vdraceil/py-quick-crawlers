@@ -3,6 +3,7 @@ import json
 import logging
 
 from scrapy.exceptions import DropItem
+from scrapy.pipelines.files import FilesPipeline
 
 from utils.general import URLUtils
 from utils.general import ShellUtils
@@ -89,31 +90,19 @@ class CSVWriterPipeline(object):
             self.file.close()
 
 
-class ContentDownloadPipeline(object):
-    def __init__(self):
-        self.out_dir = None
+class ContentDownloadPipeline(FilesPipeline):
+    @classmethod
+    def from_settings(cls, settings):
+        base_dir = settings.get('FILES_STORE', settings.get('DEFAULT_OUT_DIR'))
+        enable_dir_structure = settings.get('FILES_STORE_ENABLE_DIR_STRUCTURE', 0)
+        return cls(base_dir, enable_dir_structure)
 
-    def _get_out_dir(self, settings):
-        return settings.get('OUT_DIR') or settings.get('DEFAULT_OUT_DIR')
+    def __init__(self, base_dir, enable_dir_structure):
+        super(ContentDownloadPipeline, self).__init__(base_dir)
+        self.enable_dir_structure = enable_dir_structure
 
-    def process_item(self, item, spider):
-        if not self.out_dir:
-            self.out_dir = self._get_out_dir(spider.settings)
-
-        file_path = os.path.join(self.out_dir,
-                            URLUtils.get_domain(item['url']),
-                            URLUtils.get_path(item['url'])[1:])
-        dir_path = os.path.dirname(file_path)
-
-        # make dir
-        ShellUtils.mkdirp(dir_path)
-
-        # dump content into file
-        with open(file_path, 'w+b') as file:
-            file.write(item['content'])
-
-        # return item to next pipeline, if any
-        return item
-
-    def close_spider(self, spider):
-        LOG.debug('Write to dir complete: %s' %self.out_dir)
+    def file_path(self, request, response=None, info=None):
+        path = super(ContentDownloadPipeline, self).file_path(request, response, info)
+        if self.enable_dir_structure:
+            url = request.url
+            path = os.path.join(URLUtils.get_domain(url), URLUtils.get_path(url)[1:])
