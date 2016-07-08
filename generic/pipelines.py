@@ -2,6 +2,9 @@ import os
 import json
 import logging
 
+from scrapy import signals
+from scrapy.exporters import CsvItemExporter, JsonLinesItemExporter
+from scrapy.exporters import XmlItemExporter, PprintItemExporter
 from scrapy.exceptions import DropItem
 from scrapy.pipelines.files import FilesPipeline
 
@@ -23,71 +26,44 @@ class DuplicatesFilterPipeline(object):
         return item
 
 
-class JSONWriterPipeline(object):
-    def __init__(self):
-        self.file = None
-        self.out_file = None
-
-    def _get_out_file(self, settings):
-        return settings.get('OUT_FILE') \
-            or settings.get('DEFAULT_OUT_FILE') + '.json'
-
-    def process_item(self, item, spider):
-        if not self.file:
-            self.out_file = self._get_out_file(spider.settings)
-            LOG.debug('Write to file initiated: %s' %self.out_file)
-            self.file = open(self.out_file, 'w')
-            # write array open and first line
-            self.file.write('[' + json.dumps(dict(item)))
+class ExportPipeline(object):
+    @staticmethod
+    def _get_exporter(feed_type):
+        if feed_type == 'JSON':
+            return JsonLinesItemExporter
+        elif feed_type == 'CSV':
+            return CsvItemExporter
+        elif feed_type == 'XML':
+            return XmlItemExporter
         else:
-            line = ',' + os.linesep + json.dumps(dict(item))
-            self.file.write(line)
+            return PprintItemExporter
 
-        # return item to next pipeline, if any
-        return item
+    @classmethod
+    def from_crawler(cls, crawler):
+        settings = crawler.settings
+        feed_type = settings.get('FEED_TYPE', settings.get('DEFAULT_FEED_TYPE'))
+        out_file = settings.get('OUT_FILE', settings.get('DEFAULT_OUT_FILE'))
+        pipeline = cls(feed_type, out_file)
+        crawler.signals.connect(pipeline.spider_opened, signals.spider_opened)
+        crawler.signals.connect(pipeline.spider_closed, signals.spider_closed)
+        return pipeline
 
-    def close_spider(self, spider):
-        if self.file:
-            # write array close
-            self.file.write(']')
-            LOG.debug('Write to file complete: %s' %self.out_file)
+    def __init__(self, feed_type, out_file):
+        self.feed_type = feed_type
+        self.out_file = out_file
 
+    def spider_opened(self, spider):
+        self.file = open(self.out_file, 'w')
+        self.exporter = ExportPipeline._get_exporter(self.feed_type)(self.file)
+        self.exporter.start_exporting()
 
-class CSVWriterPipeline(object):
-    DELIMITER  = ','
-
-    def __init__(self):
-        self.file = None
-        self.out_file = None
-
-    def _get_out_file(self, settings):
-        return settings.get('OUT_FILE') \
-            or settings.get('DEFAULT_OUT_FILE') + '.csv'
+    def spider_closed(self, spider):
+        self.exporter.finish_exporting()
+        self.file.close()
 
     def process_item(self, item, spider):
-        # validate item
-        if not hasattr(item, 'get_keys') or not hasattr(item, 'get_values'):
-            error = 'Skipping Item - missing CSV methods "get_keys"/"get_values"'
-            LOG.debug('%s' %error)
-            return item
-
-        if not self.file:
-            self.out_file = self._get_out_file(spider.settings)
-            LOG.debug('Write to file initiated: %s' %self.out_file)
-            self.file = open(self.out_file, 'w')
-            # write headers
-            self.file.write(CSVWriterPipeline.DELIMITER.join(item.get_keys()))
-
-        line = os.linesep + CSVWriterPipeline.DELIMITER.join(item.get_values())
-        self.file.write(line)
-
-        # return item to next pipeline, if any
+        self.exporter.export_item(item)
         return item
-
-    def close_spider(self, spider):
-        if self.file:
-            LOG.debug('Write to file complete: %s' %self.out_file)
-            self.file.close()
 
 
 class ContentDownloadPipeline(FilesPipeline):

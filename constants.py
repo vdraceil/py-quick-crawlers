@@ -20,7 +20,7 @@ class SpiderSettingOverrides(object):
     PATTERN_MATCH = {
         'ITEM_PIPELINES': {
             'generic.pipelines.DuplicatesFilterPipeline': 100,
-            'generic.pipelines.JSONWriterPipeline': 900
+            'generic.pipelines.ExportPipeline': 900
         }
     }
 
