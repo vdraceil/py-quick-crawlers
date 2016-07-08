@@ -44,7 +44,7 @@ DEPTH_PRIORITY = 1
 DOWNLOAD_DELAY = 0.2   # 200 milli-seconds
 
 # the amount of time that the downloader will wait before timing out
-DOWNLOAD_TIMEOUT = 120  # seconds
+DOWNLOAD_TIMEOUT = 1800  # 1800 seconds = 30 mins
 
 # disable max size file download limitation
 DOWNLOAD_WARNSIZE = 0
