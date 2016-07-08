@@ -72,7 +72,7 @@ class ContentDownloadPipeline(FilesPipeline):
     @classmethod
     def from_settings(cls, settings):
         base_dir = settings.get('FILES_STORE', settings.get('DEFAULT_OUT_DIR'))
-        enable_dir_structure = settings.get('FILES_STORE_ENABLE_DIR_STRUCTURE', 0)
+        enable_dir_structure = settings.get('FILES_STORE_ENABLE_DIR_STRUCTURE', False)
         return cls(base_dir, enable_dir_structure)
 
     def __init__(self, base_dir, enable_dir_structure):
@@ -84,3 +84,6 @@ class ContentDownloadPipeline(FilesPipeline):
         if self.enable_dir_structure:
             url = request.url
             path = os.path.join(URLUtils.get_domain(url), URLUtils.get_path(url)[1:])
+        else:
+            path = os.path.split(path)[1]
+        return path
