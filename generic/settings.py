@@ -51,5 +51,5 @@ DOWNLOAD_WARNSIZE = 0
 
 # custom
 DEFAULT_OUT_DIR = '.'
-DEFAULT_OUT_FILE = 'default.json'
+DEFAULT_OUT_FILE = 'default'
 DEFAULT_FEED_TYPE = 'JSON'

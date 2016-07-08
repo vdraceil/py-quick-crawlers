@@ -42,7 +42,8 @@ class ExportPipeline(object):
     def from_crawler(cls, crawler):
         settings = crawler.settings
         feed_type = settings.get('FEED_TYPE', settings.get('DEFAULT_FEED_TYPE'))
-        out_file = settings.get('OUT_FILE', settings.get('DEFAULT_OUT_FILE'))
+        out_file = settings.get('OUT_FILE',
+            settings.get('DEFAULT_OUT_FILE') + '.' + feed_type.lower())
         pipeline = cls(feed_type, out_file)
         crawler.signals.connect(pipeline.spider_opened, signals.spider_opened)
         crawler.signals.connect(pipeline.spider_closed, signals.spider_closed)
@@ -58,6 +59,7 @@ class ExportPipeline(object):
         self.exporter.start_exporting()
 
     def spider_closed(self, spider):
+        LOG.info('Output written successfully to file: %s' %self.file.name)
         self.exporter.finish_exporting()
         self.file.close()
 
