@@ -1,8 +1,8 @@
 # scrapy - code related settings
 BOT_NAME = 'scrapy_generic_spiders'
-SPIDER_MODULES = ['generic.spiders.pattern_match',
-                  'generic.spiders.content_download']
-NEWSPIDER_MODULE = 'generic.spiders'
+SPIDER_MODULES = ['py_quick_crawlers.generic.spiders.pattern_match',
+                  'py_quick_crawlers.generic.spiders.content_download']
+NEWSPIDER_MODULE = 'py_quick_crawlers.generic.spiders'
 LOG_LEVEL = 'DEBUG'
 LOG_ENABLED = False
 
@@ -20,12 +20,12 @@ EXTENSIONS = {
 
 # middlewares
 SPIDER_MIDDLEWARES = {
-    'generic.middlewares.DomainDepthMiddleware': 100,
+    'py_quick_crawlers.generic.middlewares.DomainDepthMiddleware': 100,
     'scrapy.spidermiddlewares.depth.DepthMiddleware': None
 }
 
 DOWNLOADER_MIDDLEWARES = {
-    'generic.middlewares.CustomDownloaderMiddleware': 650,
+    'py_quick_crawlers.generic.middlewares.CustomDownloaderMiddleware': 650,
     'scrapy.downloadermiddlewares.downloadtimeout.DownloadTimeoutMiddleware': 350,
     'scrapy.downloadermiddlewares.stats.DownloaderStats': None
 }

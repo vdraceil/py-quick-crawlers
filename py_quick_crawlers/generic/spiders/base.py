@@ -7,7 +7,7 @@ from scrapy.spiders import CrawlSpider
 from scrapy.linkextractors import LinkExtractor
 from scrapy.http.response.html import HtmlResponse
 
-from constants import Regex
+from py_quick_crawlers.constants import Regex
 
 
 LOG = logging.getLogger(__name__)

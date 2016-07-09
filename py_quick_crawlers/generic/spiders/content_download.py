@@ -4,10 +4,10 @@ import logging
 from scrapy.spiders import Rule
 from scrapy.linkextractors import LinkExtractor
 from scrapy.exceptions import CloseSpider
-from generic.items import FileDownloadItem
-from generic.spiders.base import Spider as BaseSpider
 
-from utils.general import URLUtils
+from py_quick_crawlers.utils.general import URLUtils
+from py_quick_crawlers.generic.items import FileDownloadItem
+from py_quick_crawlers.generic.spiders.base import Spider as BaseSpider
 
 
 LOG = logging.getLogger(__name__)

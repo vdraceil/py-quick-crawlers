@@ -8,8 +8,7 @@ from scrapy.exporters import XmlItemExporter, PprintItemExporter
 from scrapy.exceptions import DropItem
 from scrapy.pipelines.files import FilesPipeline
 
-from utils.general import URLUtils
-from utils.general import ShellUtils
+from py_quick_crawlers.utils.general import URLUtils, ShellUtils
 
 
 LOG = logging.getLogger(__name__)

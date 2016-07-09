@@ -5,7 +5,7 @@ import errno
 from urlparse import urljoin
 from urlparse import urlparse
 
-from constants import Regex
+from py_quick_crawlers.constants import Regex
 
 
 class URLUtils(object):

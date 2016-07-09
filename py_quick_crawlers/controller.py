@@ -5,11 +5,11 @@ import logging
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 
-from utils.general import URLUtils
-from utils.general import ShellUtils
-from constants import Regex, SpiderSettingOverrides
-from generic.spiders.pattern_match import Spider as PatternMatchSpider
-from generic.spiders.content_download import Spider as ContentDownloadSpider
+from py_quick_crawlers.utils.general import URLUtils
+from py_quick_crawlers.utils.general import ShellUtils
+from py_quick_crawlers.constants import Regex, SpiderSettingOverrides
+from py_quick_crawlers.generic.spiders.pattern_match import Spider as PatternMatchSpider
+from py_quick_crawlers.generic.spiders.content_download import Spider as ContentDownloadSpider
 
 
 LOG = logging.getLogger(__name__)

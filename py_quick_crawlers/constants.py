@@ -19,13 +19,13 @@ class Regex(object):
 class SpiderSettingOverrides(object):
     PATTERN_MATCH = {
         'ITEM_PIPELINES': {
-            'generic.pipelines.DuplicatesFilterPipeline': 100,
-            'generic.pipelines.ExportPipeline': 900
+            'py_quick_crawlers.generic.pipelines.DuplicatesFilterPipeline': 100,
+            'py_quick_crawlers.generic.pipelines.ExportPipeline': 900
         }
     }
 
     CONTENT_DOWNLOAD = {
         'ITEM_PIPELINES': {
-            'generic.pipelines.ContentDownloadPipeline': 100
+            'py_quick_crawlers.generic.pipelines.ContentDownloadPipeline': 100
         }
     }

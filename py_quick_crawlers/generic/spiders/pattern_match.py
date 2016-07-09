@@ -2,8 +2,9 @@ import re
 import logging
 
 from scrapy.exceptions import CloseSpider
-from generic.items import FlexibleItem
-from generic.spiders.base import Spider as BaseSpider
+
+from py_quick_crawlers.generic.items import FlexibleItem
+from py_quick_crawlers.generic.spiders.base import Spider as BaseSpider
 
 
 LOG = logging.getLogger(__name__)
