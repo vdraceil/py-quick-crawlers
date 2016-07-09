@@ -13,7 +13,7 @@ setup(
     license = "LGPL",
     keywords = "python quick scrapy crawler",
     url = "https://github.com/vdraceil/scrapy-generic-spiders",
-    packages = ['py_quick_crawlers'],
+    packages = find_packages(),
     install_requires = [
         "scrapy==1.1.0",
     ],
