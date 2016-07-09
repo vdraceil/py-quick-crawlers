@@ -3,7 +3,7 @@ from setuptools import find_packages
 
 
 setup(
-    name = "py_quick_crawlers",
+    name = "py-quick-crawlers",
     version = "0.0.1",
     author = "Vinoth Kumar Kannan",
     author_email = "vdraceil@gmail.com",
