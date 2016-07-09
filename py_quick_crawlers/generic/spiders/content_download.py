@@ -33,11 +33,17 @@ class Spider(BaseSpider):
             %(self.start_urls[0], self.allowed_domains[0]))
 
     def parse_item(self, response):
+        item = None
+
         # yield the item only if it passes through the pattern_list filter
         for pattern in self.pattern_list:
             if re.match(pattern, URLUtils.get_file_name(response.url)):
-                LOG.debug('URL Pattern Match: %s' %response.url)
                 item = FileDownloadItem(file_urls=[response.url])
-                yield item
-            else:
-                LOG.debug('URL Skip: %s' %response.url)
+                break
+
+        if item:
+            LOG.debug('URL Pattern Match: %s' %response.url)
+            yield item
+        else:
+            LOG.debug('URL Skip: %s' %response.url)
+
