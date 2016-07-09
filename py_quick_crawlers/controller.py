@@ -17,6 +17,9 @@ LOG = logging.getLogger(__name__)
 logging.getLogger('scrapy').propagate = False
 
 class SpiderController(object):
+    # set env variable so that scrapy knows what custom settings to load
+    os.environ['SCRAPY_SETTINGS_MODULE'] = 'py_quick_crawlers.generic.settings'
+
     SETTINGS = get_project_settings()
 
     def pattern_match_crawl(self, target, pattern_dict,

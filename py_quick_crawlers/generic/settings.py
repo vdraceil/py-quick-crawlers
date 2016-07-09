@@ -1,5 +1,5 @@
 # scrapy - code related settings
-BOT_NAME = 'scrapy_generic_spiders'
+BOT_NAME = 'py_quick_crawlers'
 SPIDER_MODULES = ['py_quick_crawlers.generic.spiders.pattern_match',
                   'py_quick_crawlers.generic.spiders.content_download']
 NEWSPIDER_MODULE = 'py_quick_crawlers.generic.spiders'
