@@ -7,22 +7,25 @@ setup(
     version = "0.0.1",
     author = "Vinoth Kumar Kannan",
     author_email = "vdraceil@gmail.com",
-    description = "A collection of scrapy spiders to do most required generic " \
-        "crawling and wrappers to them hiding the involvement of scrapy " \
-        "completely",
-    license = "LGPL",
-    keywords = "python quick scrapy crawler",
+    description = "Python APIs wrapping generic Scrapy crawlers"
+    license = "MIT",
+    keywords = "python quick scrapy web crawler",
     url = "https://github.com/vdraceil/py-quick-crawlers",
     packages = find_packages(),
     install_requires = [
         "scrapy==1.1.0",
     ],
     classifiers = [
+        "Development Status :: 3 - Alpha",
         "Programming Language :: Python",
+        "Programming Language :: Python :: 2.7",
         "Operating System :: POSIX",
         "Operating System :: MacOS :: MacOS X",
-        "License :: OSI Approved :: LGPL License"
-        "Development Status :: 3 - Alpha",
+        "Intended Audience :: Developers",
+        "Topic :: Internet :: WWW/HTTP",
+        "Topic :: Software Developement",
+        "Topic :: Web Crawling",
+        "License :: OSI Approved :: MIT License",
     ],
     zip_safe = True
 )
